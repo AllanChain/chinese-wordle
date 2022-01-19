@@ -21,7 +21,7 @@ export interface Guess {
 export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
-    guesses: [] as Guess[],
+    guessedIdioms: [] as Idiom[],
   }),
   getters: {
     answerOrigPinyin(state): string | null {
@@ -51,6 +51,19 @@ export const useGuessStore = defineStore('guess', {
         })
       }
     },
+    guesses(): Guess[] {
+      const idioms = useIdiomsStore()
+      return this.guessedIdioms.map((idiom) => {
+        const origPinyin = idioms.allIdioms[idiom]
+        const pinyin = splitIdiomPinyin(origPinyin)
+        return {
+          idiom,
+          pinyin,
+          origPinyin,
+          result: this.compareIdiomPinyin(pinyin),
+        }
+      })
+    },
   },
   actions: {
     initAnswerIdiom(idiom: Idiom) {
@@ -64,14 +77,7 @@ export const useGuessStore = defineStore('guess', {
     guessIdiom(guess: Idiom): boolean {
       const idioms = useIdiomsStore()
       if (!idioms.isValidIdiom(guess)) return false
-      const origPinyin = idioms.allIdioms[guess]
-      const pinyin = splitIdiomPinyin(origPinyin)
-      this.guesses.push({
-        idiom: guess,
-        pinyin,
-        origPinyin,
-        result: this.compareIdiomPinyin(pinyin),
-      })
+      this.guessedIdioms.push(guess)
       return true
     },
   },
