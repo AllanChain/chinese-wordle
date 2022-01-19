@@ -6,6 +6,7 @@ import IdiomDispaly from './components/IdiomDispaly.vue'
 import FadeTransition from './components/FadeTransition.vue'
 import AnswerModal from './components/AnswerModal.vue'
 import AboutGame from './components/AboutGame.vue'
+import Hints from './components/Hints.vue'
 
 const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
@@ -76,6 +77,7 @@ fetch('idioms.json')
         放弃
       </button>
     </div>
+    <Hints v-if="guessStore.answerIdiom" :hints="guessStore.hints" />
     <div v-if="guessStore.guesses.length">
       <IdiomDispaly
         v-for="(guess, i) in guessStore.guesses"

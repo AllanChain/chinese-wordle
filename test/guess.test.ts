@@ -37,10 +37,13 @@ describe('Real Test', () => {
       idiom: '东施效颦',
       pinyin: [['d', 'ong', 1], ['sh', 'i', 1], ['x', 'iao', 4], ['p', 'in', 2]],
       origPinyin: 'dōng shī xiào pín',
-      result: [[0, 0], [0, 0], [0, 0], [0, 0]],
+      result: [[0, 0, false], [0, 0, false], [0, 0, false], [0, 0, false]],
     })
     guessStore.guessIdiom('沉鱼落雁')
     expect(guessStore.guesses[1].result)
-      .toEqual([[1, 0], [1, 0], [0, 2], [1, 0]])
+      .toEqual([[1, 0, false], [1, 0, false], [0, 2, false], [1, 0, false]])
+    guessStore.guessIdiom('左右逢源')
+    expect(guessStore.guesses[2].result)
+      .toEqual([[1, 1, true], [1, 0, false], [0, 0, false], [1, 0, false]])
   })
 })

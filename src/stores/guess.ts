@@ -9,7 +9,8 @@ export enum GuessResult {
   Exists,
   CorrectPosition,
 }
-export type CharGuessResult = [GuessResult, GuessResult]
+export type CombinationResult = boolean
+export type CharGuessResult = [GuessResult, GuessResult, CombinationResult]
 export type IdiomGuessResult = CharGuessResult[]
 export interface Guess {
   idiom: Idiom
@@ -40,14 +41,20 @@ export const useGuessStore = defineStore('guess', {
         const answerFlatten = this.answerPinyin.flatMap(
           ([initial, final]) => [initial, final],
         )
+        const answerSyllables = this.answerPinyin.map(
+          ([initial, final]) => initial + final,
+        )
         return guess.map(([initial, final], charIndex) => {
-          return [initial, final].map((part, partIndex) => {
-            if (this.answerPinyin![charIndex][partIndex] === part)
-              return GuessResult.CorrectPosition
-            if (answerFlatten.includes(part))
-              return GuessResult.Exists
-            return GuessResult.NotExists
-          }) as CharGuessResult
+          const [initialResult, finalResult] = [initial, final].map(
+            (part, partIndex) => {
+              if (this.answerPinyin![charIndex][partIndex] === part)
+                return GuessResult.CorrectPosition
+              if (answerFlatten.includes(part))
+                return GuessResult.Exists
+              return GuessResult.NotExists
+            })
+          const combinationResult = answerSyllables.includes(initial + final)
+          return [initialResult, finalResult, combinationResult]
         })
       }
     },
@@ -63,6 +70,25 @@ export const useGuessStore = defineStore('guess', {
           result: this.compareIdiomPinyin(pinyin),
         }
       })
+    },
+    hints(): string[] {
+      const hints: string[] = []
+      const guessFlatten = this.guesses.flatMap(({ pinyin }) => {
+        return pinyin.flatMap(([initial, final]) => [initial, final])
+      })
+      const guessSyllables = this.guesses.flatMap(({ pinyin }) => {
+        return pinyin.map(([initial, final]) => initial + final)
+      })
+      for (const pinyin of this.answerPinyin!) {
+        const [initial, final] = pinyin
+        if (
+          guessFlatten.includes(initial)
+           && guessFlatten.includes(final)
+           && !guessSyllables.includes(initial + final)
+        )
+          hints.push(`${initial}+${final}`)
+      }
+      return hints
     },
   },
   actions: {

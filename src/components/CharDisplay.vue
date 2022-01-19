@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { GuessResult } from '@/stores/guess'
 import type { CharGuessResult } from '@/stores/guess'
 import type { CharPinyin } from '@/pinyin'
@@ -23,10 +22,11 @@ const guessColors = {
     class="m-2 p-1 w-16 h-16"
     w:border="2 yellow-300 rounded-md dashed"
   >
-    <div class="text-sm font-mono">
+    <div class="text-sm font-mono font-semibold">
       <div
         v-if="Array.isArray(pinyin) && guessResults"
-        class="flex justify-center items-center"
+        class="flex justify-center items-baseline"
+        :class="guessResults[2] ? [ 'underline', 'underline-double', 'decoration-green-500' ] : []"
       >
         <div :class="`text-${guessColors[guessResults[0]]}`">
           {{ pinyin[0] || '□' }}
