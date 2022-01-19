@@ -21,7 +21,6 @@ export const handleRule5 = (finals: string): string => {
     case 'iu': return 'iou'
     case 'ui': return 'uei'
     case 'un': return 'uen'
-    case 'ün': return 'üen'
     default: return finals
   }
 }
