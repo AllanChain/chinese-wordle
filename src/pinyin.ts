@@ -21,6 +21,7 @@ export const handleRule5 = (finals: string): string => {
     case 'iu': return 'iou'
     case 'ui': return 'uei'
     case 'un': return 'uen'
+    case 'ün': return 'üen'
     default: return finals
   }
 }
@@ -28,22 +29,26 @@ export const handleRule5 = (finals: string): string => {
 export const splitCharPinyin = (pinyin: string): CharPinyin => {
   // eslint-disable-next-line prefer-const
   let [untoned, tone] = splitTone(pinyin)
-  if ('jqx'.includes(untoned[0]) && untoned.includes('u'))
+  if ('jqx'.includes(untoned[0]) && untoned[1] === 'u')
     untoned = untoned.replace('u', 'ü')
+
+  if (untoned.startsWith('y')) {
+    switch (untoned[1]) {
+      case 'i': untoned = untoned.slice(1); break
+      case 'u': untoned = `ü${untoned.slice(2)}`; break
+      default: untoned = `i${untoned.slice(1)}`; break
+    }
+  }
+  else if (untoned.startsWith('w')) {
+    untoned = untoned[1] === 'u' ? untoned.slice(1) : `u${untoned.slice(1)}`
+  }
 
   if (twoCharInitials.includes(untoned.slice(0, 2)))
     return [untoned.slice(0, 2), handleRule5(untoned.slice(2)), tone]
-
-  if (oneCharInitials.includes(untoned.charAt(0)))
+  else if (oneCharInitials.includes(untoned.charAt(0)))
     return [untoned.charAt(0), handleRule5(untoned.slice(1)), tone]
-
-  if (untoned.startsWith('yi')) return ['', untoned.slice(1), tone]
-  if (untoned.startsWith('yu')) return ['', `ü${untoned.slice(2)}`, tone]
-  if (untoned.startsWith('y')) return ['', `i${untoned.slice(2)}`, tone]
-  if (untoned.startsWith('wu')) return ['', untoned.slice(1), tone]
-  if (untoned.startsWith('w')) return ['', `u${untoned.slice(1)}`, tone]
-
-  return ['', untoned, tone]
+  else
+    return ['', handleRule5(untoned), tone]
 }
 
 export const splitIdiomPinyin = (pinyin: string): IdiomPinyin => {
