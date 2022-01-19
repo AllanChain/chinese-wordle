@@ -71,6 +71,17 @@ export const useGuessStore = defineStore('guess', {
         }
       })
     },
+    won(): boolean {
+      return (
+        this.guesses.length !== 0
+        && this.guesses[this.guesses.length - 1].result.every(
+          result => (
+            result[0] === GuessResult.CorrectPosition
+            && result[1] === GuessResult.CorrectPosition
+          ),
+        )
+      )
+    },
     hints(): string[] {
       const hints: string[] = []
       const guessFlatten = this.guesses.flatMap(({ pinyin }) => {

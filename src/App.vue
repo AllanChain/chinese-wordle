@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useIdiomsStore } from './stores/idioms'
 import { useGuessStore } from './stores/guess'
 import IdiomDispaly from './components/IdiomDispaly.vue'
@@ -18,6 +18,13 @@ const hideGuessErrorHandle = ref<number|null>(null)
 
 const showAnswer = ref(false)
 const givenUp = ref(false)
+const gameEnded = computed(() => {
+  return (
+    givenUp.value
+    || guessStore.guessedIdioms.length >= 10
+    || guessStore.won
+  )
+})
 
 const reDo = () => {
   guessStore.$reset()
@@ -100,7 +107,7 @@ fetch('idioms.json')
       <div class="flex justify-center mt-3 ">
         <input
           v-model="guessIdiom"
-          :disabled="givenUp"
+          :disabled="gameEnded"
           class="rounded-l px-2 w-48"
           w:border="1 solid gray-300"
           w:focus="ring ring-blue-400 border-blue-400"
@@ -109,7 +116,7 @@ fetch('idioms.json')
         >
         <button
           class="rounded-r w-16"
-          :disabled="givenUp"
+          :disabled="gameEnded"
           w:p="x-4 y-2"
           w:bg="blue-500 hover:blue-600 active:blue-700 disabled:blue-gray-400"
           w:text="white"
