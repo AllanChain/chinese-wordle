@@ -20,19 +20,21 @@ const guessColors = {
 
 <template>
   <div
-    class="m-2 p-1 w-14 h-14"
+    class="m-2 p-1 w-16 h-16"
     w:border="2 yellow-300 rounded-md dashed"
   >
-    <div class="flex justify-center text-sm font-mono">
-      <div
-        v-for="i in [0, 1]"
-        :key="i"
-        :class="`text-${guessColors[guessResults[i]]}`"
-      >
-        {{ pinyin[i] || '□' }}
+    <div class="flex justify-center items-center text-sm font-mono">
+      <div :class="`text-${guessColors[guessResults[0]]}`">
+        {{ pinyin[0] || '□' }}
+      </div>
+      <div class="text-blue-500 text-xs">
+        +
+      </div>
+      <div :class="`text-${guessColors[guessResults[1]]}`">
+        {{ pinyin[1] }}
       </div>
     </div>
-    <div class="text-center">
+    <div class="mt-1 text-center">
       {{ char }}
     </div>
   </div>
