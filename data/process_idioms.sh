@@ -14,4 +14,4 @@ then
     wget http://thuocl.thunlp.org/source/THUOCL_chengyu.txt
 fi
 
-python3 frequent_idioms.py | jq 'map({(.word): .pinyin}) | add' -c > ../src/assets/idioms.json
+python3 frequent_idioms.py | jq 'map({(.word): .pinyin}) | add' -c > ../public/idioms.json

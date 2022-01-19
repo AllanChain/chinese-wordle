@@ -1,28 +1,23 @@
 import { describe, expect, test } from 'vitest'
-import { removePinyinTone, removeTone, splitCharPinyin, splitIdiomPinyin } from '../src/judge'
+import { splitCharPinyin, splitIdiomPinyin, splitTone } from '../src/pinyin'
 
 describe('Pinyin processing', () => {
+  test('Split tone', () => {
+    expect(splitTone('zi')).toEqual(['zi', 0])
+    expect(splitTone('ēn')).toEqual(['en', 1])
+    expect(splitTone('í')).toEqual(['i', 2])
+    expect(splitTone('zuò')).toEqual(['zuo', 4])
+    expect(splitTone('qǔ')).toEqual(['qu', 3])
+  })
   test('Split single char', () => {
-    expect(splitCharPinyin('zuò')).toEqual(['z', 'uò'])
-    expect(splitCharPinyin('shén')).toEqual(['sh', 'én'])
-    expect(splitCharPinyin('yú')).toEqual(['', 'ú'])
+    expect(splitCharPinyin('zuò')).toEqual(['z', 'uo', 4])
+    expect(splitCharPinyin('shén')).toEqual(['sh', 'en', 2])
+    expect(splitCharPinyin('yú')).toEqual(['', 'ü', 2])
   })
   test('Split idiom', () => {
     expect(splitIdiomPinyin('zuò wú xū xí'))
-      .toEqual([['z', 'uò'], ['', 'ú'], ['x', 'ū'], ['x', 'í']])
+      .toEqual([['z', 'uo', 4], ['', 'u', 2], ['x', 'ü', 1], ['x', 'i', 2]])
     expect(splitIdiomPinyin('ē yú fèng chéng'))
-      .toEqual([['', 'ē'], ['', 'ú'], ['f', 'èng'], ['ch', 'éng']])
-  })
-  test('Remove tone', () => {
-    expect(removeTone('én')).toEqual('en')
-    expect(removeTone('í')).toEqual('i')
-  })
-  test('Remove CharPinyin tone', () => {
-    expect(removePinyinTone(['z', 'uò'])).toEqual(['z', 'uo'])
-    expect(removePinyinTone(['', 'ú'])).toEqual(['', 'u'])
-  })
-  test('Remove IdiomPinyin tone', () => {
-    expect(removePinyinTone([['z', 'uò'], ['', 'ú'], ['x', 'ū'], ['x', 'í']]))
-      .toEqual([['z', 'uo'], ['', 'u'], ['x', 'u'], ['x', 'i']])
+      .toEqual([['', 'e', 1], ['', 'ü', 2], ['f', 'eng', 4], ['ch', 'eng', 2]])
   })
 })
