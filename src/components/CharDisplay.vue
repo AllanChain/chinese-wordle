@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const guessColors = {
-  [GuessResult.NotExists]: 'grey-500',
+  [GuessResult.NotExists]: 'gray-500',
   [GuessResult.Exists]: 'yellow-500',
   [GuessResult.CorrectPosition]: 'green-500',
 }
@@ -19,8 +19,11 @@ const guessColors = {
 </script>
 
 <template>
-  <div class="m-2 p-1 w-16" w:border="1 yellow-200 dashed">
-    <div class="flex justify-center">
+  <div
+    class="m-2 p-1 w-14 h-14"
+    w:border="2 yellow-300 rounded-md dashed"
+  >
+    <div class="flex justify-center text-sm font-mono">
       <div
         v-for="i in [0, 1]"
         :key="i"

@@ -20,7 +20,7 @@ const chars = computed(
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex justify-center">
     <CharDisplay
       v-for="(char, i) in chars"
       :key="i"
