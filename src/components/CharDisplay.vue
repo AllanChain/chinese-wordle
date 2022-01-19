@@ -6,8 +6,8 @@ import type { CharPinyin } from '@/pinyin'
 
 const props = defineProps<{
   char: string
-  pinyin: CharPinyin
-  guessResults: CharGuessResult
+  pinyin: CharPinyin | string
+  guessResults?: CharGuessResult
 }>()
 
 const guessColors = {
@@ -23,15 +23,23 @@ const guessColors = {
     class="m-2 p-1 w-16 h-16"
     w:border="2 yellow-300 rounded-md dashed"
   >
-    <div class="flex justify-center items-center text-sm font-mono">
-      <div :class="`text-${guessColors[guessResults[0]]}`">
-        {{ pinyin[0] || '□' }}
+    <div class="text-sm font-mono">
+      <div
+        v-if="Array.isArray(pinyin) && guessResults"
+        class="flex justify-center items-center"
+      >
+        <div :class="`text-${guessColors[guessResults[0]]}`">
+          {{ pinyin[0] || '□' }}
+        </div>
+        <div class="text-blue-500 text-xs">
+          +
+        </div>
+        <div :class="`text-${guessColors[guessResults[1]]}`">
+          {{ pinyin[1] }}
+        </div>
       </div>
-      <div class="text-blue-500 text-xs">
-        +
-      </div>
-      <div :class="`text-${guessColors[guessResults[1]]}`">
-        {{ pinyin[1] }}
+      <div v-else class="text-center">
+        {{ pinyin }}
       </div>
     </div>
     <div class="mt-1 text-center">
