@@ -28,7 +28,7 @@ const getColor = (p: string) => {
       <div
         v-for="initial in [...initials, '']"
         :key="initial"
-        class="*badge text-white"
+        class="*badge text-white font-mono"
         :class="getColor(initial)"
       >
         {{ initial || 'Ø' }}
