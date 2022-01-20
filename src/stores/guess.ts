@@ -29,7 +29,11 @@ export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
-    enabledHints: [] as HintType[],
+    enabledHints: [
+      HintType.GiveCombination_IfBothEverGuessed,
+      HintType.GiveTone_IfCombinationCorrect,
+      HintType.GiveCharacter_IfBothPositionCorrect,
+    ],
   }),
   getters: {
     answerOrigPinyin(state): string | null {

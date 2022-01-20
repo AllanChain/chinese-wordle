@@ -49,7 +49,7 @@ describe('Real Test', () => {
 
   test('hint give combination if both ever guessed', () => {
     const guessStore = useGuessStore()
-    guessStore.enabledHints.push(HintType.GiveCombination_IfBothEverGuessed)
+    guessStore.enabledHints = [HintType.GiveCombination_IfBothEverGuessed]
     guessStore.guessIdiom('沉鱼落雁')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('张灯结彩')
@@ -57,7 +57,7 @@ describe('Real Test', () => {
   })
   test('hint give combination if both exists in one guess', () => {
     const guessStore = useGuessStore()
-    guessStore.enabledHints.push(HintType.GiveCombination_IfBothExistsInOneGuess)
+    guessStore.enabledHints = [HintType.GiveCombination_IfBothExistsInOneGuess]
     guessStore.guessIdiom('沉鱼落雁')
     guessStore.guessIdiom('张灯结彩')
     expect(guessStore.hints).toHaveLength(0)
@@ -66,13 +66,13 @@ describe('Real Test', () => {
   })
   test('hint give tone if combination correct', () => {
     const guessStore = useGuessStore()
-    guessStore.enabledHints.push(HintType.GiveTone_IfCombinationCorrect)
+    guessStore.enabledHints = [HintType.GiveTone_IfCombinationCorrect]
     guessStore.guessIdiom('怅然若失')
     expect(guessStore.hints).toEqual(['chāng'])
   })
   test('hint give character if both position correct', () => {
     const guessStore = useGuessStore()
-    guessStore.enabledHints.push(HintType.GiveCharacter_IfBothPositionCorrect)
+    guessStore.enabledHints = [HintType.GiveCharacter_IfBothPositionCorrect]
     guessStore.guessIdiom('五湖四海')
     expect(guessStore.hints).toEqual(['虎'])
   })
