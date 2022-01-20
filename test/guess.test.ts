@@ -2,7 +2,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { HintType, useGuessStore } from '../src/stores/guess'
 import { useIdiomsStore } from '../src/stores/idioms'
-import ALL_IDIOMS from '../public/idioms.json'
+import ALL_IDIOMS from '../public/all-idioms.json'
+import FREQ_IDIOMS from '../public/freq-idioms.json'
 
 describe('Guess Store', () => {
   beforeEach(() => {
@@ -13,6 +14,7 @@ describe('Guess Store', () => {
     const guessStore = useGuessStore()
     const idioms = useIdiomsStore()
     idioms.setAllIdioms({ 为虎作伥: 'wèi hǔ zuò chāng' })
+    idioms.setFreqIdioms(['为虎作伥'])
     guessStore.initAnswerIdiom('为虎作伥')
     expect(guessStore.answerIdiom).toBe('为虎作伥')
     expect(guessStore.answerOrigPinyin).toBe('wèi hǔ zuò chāng')
@@ -27,6 +29,7 @@ describe('Real Test', () => {
     const guessStore = useGuessStore()
     const idioms = useIdiomsStore()
     idioms.setAllIdioms(ALL_IDIOMS)
+    idioms.setFreqIdioms(FREQ_IDIOMS)
     guessStore.initAnswerIdiom('为虎作伥')
   })
 

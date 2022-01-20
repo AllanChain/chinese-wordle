@@ -12,7 +12,6 @@ import ExclusionModal from './components/ExclusionModal.vue'
 const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
 
-const loadError = ref<string | null>(null)
 const guessIdiom = ref('')
 const guessError = ref('')
 const hideGuessErrorHandle = ref<number|null>(null)
@@ -34,27 +33,35 @@ const reDo = () => {
   givenUp.value = false
 }
 
-const doGuess = () => {
+const showError = (message: string) => {
   if (hideGuessErrorHandle.value !== null)
     clearTimeout(hideGuessErrorHandle.value)
+  guessError.value = message
+  hideGuessErrorHandle.value = window.setTimeout(() => {
+    guessError.value = ''
+    hideGuessErrorHandle.value = null
+  }, 3000)
+}
 
-  if (!guessStore.guessIdiom(guessIdiom.value)) {
-    guessError.value = '不是一个有效的四字成语'
-    hideGuessErrorHandle.value = window.setTimeout(() => {
-      guessError.value = ''
-      hideGuessErrorHandle.value = null
-    }, 3000)
-  }
+const doGuess = () => {
+  if (!guessStore.guessIdiom(guessIdiom.value))
+    showError('不是一个有效的四字成语')
+
   guessIdiom.value = ''
 }
 
-fetch('idioms.json')
+fetch('freq-idioms.json')
   .then(res => res.json())
   .then((data) => {
-    idiomsStore.setAllIdioms(data)
+    idiomsStore.setFreqIdioms(data)
     guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
   })
-  .catch(err => loadError.value = err.message)
+  .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))
+
+fetch('all-idioms.json')
+  .then(res => res.json())
+  .then(data => idiomsStore.setAllIdioms(data))
+  .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))
 
 </script>
 
