@@ -25,8 +25,9 @@ const guessColors = {
     <div class="text-sm font-mono font-semibold">
       <div
         v-if="Array.isArray(pinyin) && guessResults"
-        class="flex justify-center items-baseline"
-        :class="guessResults[2] ? [ 'underline', 'underline-double', 'decoration-green-500' ] : []"
+        class="flex justify-center items-baseline decoration-green-500"
+        w:underline="offset-1 double"
+        :class="guessResults[2] ? [ 'underline' ] : []"
       >
         <div :class="`text-${guessColors[guessResults[0]]}`">
           {{ pinyin[0] || 'Ø' }}
