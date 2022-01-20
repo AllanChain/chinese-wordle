@@ -131,6 +131,7 @@ fetch(allIdiomsURL)
       <div class="flex justify-center mt-3 ">
         <input
           v-model="guessIdiom"
+          maxlength="4"
           :disabled="gameEnded"
           class="rounded-l px-2 w-48"
           w:border="1 solid gray-300"

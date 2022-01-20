@@ -3,6 +3,6 @@
     <h1 class="text-lg text-center mb-2">
       关于
     </h1>
-    <p>在下方的输入框中输入任意一个成语开始游戏。</p>
+    <p>在下方的输入框中输入任意一个四字成语开始游戏。</p>
   </div>
 </template>
