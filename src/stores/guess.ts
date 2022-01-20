@@ -29,6 +29,7 @@ export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
+    hints: [] as string[],
     enabledHints: [
       HintType.GiveCombination_IfBothEverGuessed,
       HintType.GiveTone_IfCombinationCorrect,
@@ -121,46 +122,6 @@ export const useGuessStore = defineStore('guess', {
       if (this.answerPinyinFlatten === null) return []
       return this.guessesPinyinFlatten.filter(p => !this.answerPinyinFlatten!.includes(p))
     },
-    hints(state): string[] {
-      if (!state.answerIdiom || !this.answerOrigPinyin) return []
-      const hints: string[] = []
-      for (const [index, pinyin] of this.answerPinyin!.entries()) {
-        const [initial, final] = pinyin
-        const syllable = initial + final
-        const origPinyin = this.answerOrigPinyin.split(' ')[index]
-        if (state.enabledHints.includes(HintType.GiveCharacter_IfBothPositionCorrect)) {
-          if (this.guessesSyllables.findIndex(pinyin => pinyin.includes(syllable)) !== -1) {
-            hints.push(state.answerIdiom.charAt(index))
-            continue
-          }
-        }
-        if (state.enabledHints.includes(HintType.GiveTone_IfCombinationCorrect)) {
-          if (this.guessesSyllablesFlatten.includes(syllable)) {
-            hints.push(origPinyin)
-            continue
-          }
-        }
-        if (state.enabledHints.includes(HintType.GiveCombination_IfBothEverGuessed)) {
-          if (
-            this.guessesPinyinFlatten.includes(initial)
-            && this.guessesPinyinFlatten.includes(final)
-          ) {
-            hints.push(splitTone(origPinyin)[0])
-            continue
-          }
-        }
-        if (state.enabledHints.includes(HintType.GiveCombination_IfBothExistsInOneGuess)) {
-          if (this.guessesPinyin.findIndex((pinyin) => {
-            const pinyinFlatten = pinyin.flatMap(([initial, final]) => [initial, final])
-            return pinyinFlatten.includes(initial) && pinyinFlatten.includes(final)
-          }) !== -1) {
-            hints.push(splitTone(origPinyin)[0])
-            continue
-          }
-        }
-      }
-      return hints
-    },
   },
   actions: {
     initAnswerIdiom(idiom: Idiom) {
@@ -175,7 +136,48 @@ export const useGuessStore = defineStore('guess', {
       const idioms = useIdiomsStore()
       if (!idioms.isValidIdiom(guess)) return false
       this.guessedIdioms.push(guess)
+      if (!this.won) this.updateHints()
       return true
+    },
+    updateHints() {
+      if (!this.answerIdiom || !this.answerOrigPinyin) return []
+      const hints: string[] = []
+      for (const [index, pinyin] of this.answerPinyin!.entries()) {
+        const [initial, final] = pinyin
+        const syllable = initial + final
+        const origPinyin = this.answerOrigPinyin.split(' ')[index]
+        if (this.enabledHints.includes(HintType.GiveCharacter_IfBothPositionCorrect)) {
+          if (this.guessesSyllables.findIndex(pinyin => pinyin.includes(syllable)) !== -1) {
+            hints.push(this.answerIdiom.charAt(index))
+            continue
+          }
+        }
+        if (this.enabledHints.includes(HintType.GiveTone_IfCombinationCorrect)) {
+          if (this.guessesSyllablesFlatten.includes(syllable)) {
+            hints.push(origPinyin)
+            continue
+          }
+        }
+        if (this.enabledHints.includes(HintType.GiveCombination_IfBothEverGuessed)) {
+          if (
+            this.guessesPinyinFlatten.includes(initial)
+            && this.guessesPinyinFlatten.includes(final)
+          ) {
+            hints.push(splitTone(origPinyin)[0])
+            continue
+          }
+        }
+        if (this.enabledHints.includes(HintType.GiveCombination_IfBothExistsInOneGuess)) {
+          if (this.guessesPinyin.findIndex((pinyin) => {
+            const pinyinFlatten = pinyin.flatMap(([initial, final]) => [initial, final])
+            return pinyinFlatten.includes(initial) && pinyinFlatten.includes(final)
+          }) !== -1) {
+            hints.push(splitTone(origPinyin)[0])
+            continue
+          }
+        }
+      }
+      this.hints.push(...hints.filter(hint => !this.hints.includes(hint)))
     },
   },
 })

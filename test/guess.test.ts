@@ -78,5 +78,8 @@ describe('Real Test', () => {
     guessStore.enabledHints = [HintType.GiveCharacter_IfBothPositionCorrect]
     guessStore.guessIdiom('五湖四海')
     expect(guessStore.hints).toEqual(['虎'])
+    guessStore.guessIdiom('为虎作伥')
+    expect(guessStore.won).toBe(true)
+    expect(guessStore.hints).toHaveLength(1)
   })
 })
