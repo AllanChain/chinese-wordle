@@ -7,6 +7,7 @@ import FadeTransition from './components/FadeTransition.vue'
 import AnswerModal from './components/AnswerModal.vue'
 import AboutGame from './components/AboutGame.vue'
 import Hints from './components/Hints.vue'
+import ExclusionModal from './components/ExclusionModal.vue'
 
 const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
@@ -17,6 +18,7 @@ const guessError = ref('')
 const hideGuessErrorHandle = ref<number|null>(null)
 
 const showAnswer = ref(false)
+const showExclusion = ref(false)
 const givenUp = ref(false)
 const gameEnded = computed(() => {
   return (
@@ -63,6 +65,11 @@ fetch('idioms.json')
     :answer="guessStore.answerIdiom"
     :answer-pinyin="guessStore.answerOrigPinyin"
   />
+  <ExclusionModal
+    v-model="showExclusion"
+    :excluded="guessStore.excludeList"
+    :included="guessStore.includeList"
+  />
   <div class="p-4 mx-auto max-w-lg">
     <div class="flex" w:border="b-1 solid gray-300" w:p="b-2">
       <button
@@ -85,7 +92,15 @@ fetch('idioms.json')
       </button>
     </div>
     <div v-if="guessStore.guesses.length">
-      <Hints :hints="guessStore.hints" />
+      <div class="flex">
+        <Hints :hints="guessStore.hints" />
+        <button
+          class="bg-teal-500 text-white rounded-md px-2 my-1"
+          @click="showExclusion = true"
+        >
+          查看排除
+        </button>
+      </div>
       <IdiomDispaly
         v-for="(guess, i) in guessStore.guesses"
         :key="i"

@@ -12,7 +12,13 @@ const emit = defineEmits(['update:modelValue'])
       w:bg="opacity-25 black"
       @click="emit('update:modelValue', !modelValue)"
     >
-      <slot />
+      <div
+        class="bg-white rounded-lg mx-3 max-w-md p-2"
+        w:border="t-9 teal-600"
+        w:shadow="lg gray-500"
+      >
+        <slot />
+      </div>
     </div>
   </FadeTransition>
 </template>

@@ -4,6 +4,11 @@ export type IdiomPinyin = CharPinyin[]
 const oneCharInitials = [...'bpmfdtnlgkhjqxzcsr']
 const twoCharInitials = ['zh', 'ch', 'sh']
 export const initials = [...oneCharInitials, ...twoCharInitials]
+export const finals = [
+  'a', 'o', 'e', 'ai', 'ei', 'ao', 'ou', 'an', 'en', 'ang', 'eng', 'er', 'i', 'ia',
+  'io', 'ie', 'iai', 'iao', 'iou', 'ian', 'in', 'iang', 'ing', 'iong', 'u', 'ua',
+  'uo', 'uai', 'uei', 'uan', 'uen', 'uang', 'ueng', 'ü', 'üe', 'üan', 'ün', 'ong',
+]
 
 export const toneMarks = ['\u0304', '\u0301', '\u030C', '\u0300']
 
