@@ -8,7 +8,7 @@ const props = defineProps<{ hints: string[] }>()
     <div
       v-for="hint in hints"
       :key="hint"
-      class="badge bg-green-500 text-gray-100"
+      class="*badge bg-green-500 text-gray-100"
     >
       {{ hint }}
     </div>
