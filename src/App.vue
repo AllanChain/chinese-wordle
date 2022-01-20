@@ -8,6 +8,8 @@ import AnswerModal from './components/AnswerModal.vue'
 import AboutGame from './components/AboutGame.vue'
 import Hints from './components/Hints.vue'
 import ExclusionModal from './components/ExclusionModal.vue'
+import allIdiomsURL from '@/assets/all-idioms.json?url'
+import freqIdiomsURL from '@/assets/freq-idioms.json?url'
 
 const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
@@ -50,7 +52,7 @@ const doGuess = () => {
   guessIdiom.value = ''
 }
 
-fetch('freq-idioms.json')
+fetch(freqIdiomsURL)
   .then(res => res.json())
   .then((data) => {
     idiomsStore.setFreqIdioms(data)
@@ -58,7 +60,7 @@ fetch('freq-idioms.json')
   })
   .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))
 
-fetch('all-idioms.json')
+fetch(allIdiomsURL)
   .then(res => res.json())
   .then(data => idiomsStore.setAllIdioms(data))
   .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))

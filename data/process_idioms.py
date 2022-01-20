@@ -1,3 +1,11 @@
+"""
+reviewed.txt 中，“屡试不爽”及以前的是直接从 THUOCL 的高频成语中筛选得到的；
+之后的是根据高考成语，从 THUOCL 的成语中选出的。
+
+correction.csv 中是在 THUOCL 中的成语，利用 pypinyin 和“新华词典”校对得到的。
+对于不在 THUOCL 中的，“新华词典”注音错误的成语，直接扔掉。
+"""
+
 import json
 from pathlib import Path
 
@@ -5,16 +13,15 @@ import pandas as pd
 import pypinyin
 
 HERE = Path(__file__).parent
-PUBLIC = HERE.parent / "public"
+ASSETS = HERE.parent / "src" / "assets"
 
 
 def export_freq_idioms():
-
     review_df = pd.read_table(HERE / "reviewed.txt", header=None, names=["word"])
     xinhua_df = pd.read_json(HERE / "idiom.json")
     idiom_df = pd.merge(review_df, xinhua_df, on="word", how="inner")
 
-    with open(PUBLIC / "freq-idioms.json", "w") as f:
+    with open(ASSETS / "freq-idioms.json", "w") as f:
         json.dump(idiom_df["word"].tolist(), f, ensure_ascii=False)
 
 
@@ -54,7 +61,7 @@ def export_all_idioms():
                 else:
                     print(idiom["word"], idiom["pinyin"], pinyin, sep=",")
 
-    with open(PUBLIC / "all-idioms.json", "w") as f:
+    with open(ASSETS / "all-idioms.json", "w") as f:
         json.dump(output_idioms, f, ensure_ascii=False)
 
 

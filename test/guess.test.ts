@@ -2,8 +2,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { HintType, useGuessStore } from '../src/stores/guess'
 import { useIdiomsStore } from '../src/stores/idioms'
-import ALL_IDIOMS from '../public/all-idioms.json'
-import FREQ_IDIOMS from '../public/freq-idioms.json'
+import ALL_IDIOMS from '../src/assets/all-idioms.json'
+import FREQ_IDIOMS from '../src/assets/freq-idioms.json'
 
 describe('Guess Store', () => {
   beforeEach(() => {
