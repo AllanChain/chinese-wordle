@@ -12,7 +12,10 @@ export const splitTone = (pinyin: string): [string, number] => {
   for (let i = 0; i < toneMarks.length; i++)
     if (pinyin.normalize('NFD').includes(toneMarks[i])) tone = i + 1
 
-  const replaced = pinyin.normalize('NFD').replace(/\u0304|\u0301|\u030C|\u0300/, '')
+  const replaced = pinyin
+    .normalize('NFD')
+    .replace(/\u0304|\u0301|\u030C|\u0300/, '')
+    .normalize()
   return [replaced, tone]
 }
 
