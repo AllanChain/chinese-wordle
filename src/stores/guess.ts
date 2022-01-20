@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Idiom } from './idioms'
 import { useIdiomsStore } from './idioms'
 import type { IdiomPinyin } from '@/pinyin'
-import { splitIdiomPinyin } from '@/pinyin'
+import { splitIdiomPinyin, splitTone } from '@/pinyin'
 
 export enum GuessResult {
   NotExists,
@@ -18,11 +18,18 @@ export interface Guess {
   origPinyin: string
   result: IdiomGuessResult
 }
+export enum HintType {
+  GiveCombination_IfBothEverGuessed,
+  GiveCombination_IfBothExistsInOneGuess,
+  GiveTone_IfCombinationCorrect,
+  GiveCharacter_IfBothPositionCorrect,
+}
 
 export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
+    enabledHints: [] as HintType[],
   }),
   getters: {
     answerOrigPinyin(state): string | null {
@@ -82,22 +89,48 @@ export const useGuessStore = defineStore('guess', {
         )
       )
     },
-    hints(): string[] {
+    hints(state): string[] {
+      if (!state.answerIdiom || !this.answerOrigPinyin) return []
       const hints: string[] = []
-      const guessFlatten = this.guesses.flatMap(({ pinyin }) => {
+      const guessesPinyin = this.guesses.map(guess => guess.pinyin)
+      const guessesFlatten = guessesPinyin.flatMap((pinyin) => {
         return pinyin.flatMap(([initial, final]) => [initial, final])
       })
-      const guessSyllables = this.guesses.flatMap(({ pinyin }) => {
+      const guessesSyllables = guessesPinyin.map((pinyin) => {
         return pinyin.map(([initial, final]) => initial + final)
       })
-      for (const pinyin of this.answerPinyin!) {
+      const guessesSyllablesFlatten = guessesSyllables.flat()
+      for (const [index, pinyin] of this.answerPinyin!.entries()) {
         const [initial, final] = pinyin
-        if (
-          guessFlatten.includes(initial)
-           && guessFlatten.includes(final)
-           && !guessSyllables.includes(initial + final)
-        )
-          hints.push(`${initial}+${final}`)
+        const syllable = initial + final
+        const origPinyin = this.answerOrigPinyin.split(' ')[index]
+        if (state.enabledHints.includes(HintType.GiveCharacter_IfBothPositionCorrect)) {
+          if (guessesSyllables.findIndex(pinyin => pinyin.includes(syllable)) !== -1) {
+            hints.push(state.answerIdiom.charAt(index))
+            continue
+          }
+        }
+        if (state.enabledHints.includes(HintType.GiveTone_IfCombinationCorrect)) {
+          if (guessesSyllablesFlatten.includes(syllable)) {
+            hints.push(origPinyin)
+            continue
+          }
+        }
+        if (state.enabledHints.includes(HintType.GiveCombination_IfBothEverGuessed)) {
+          if (guessesFlatten.includes(initial) && guessesFlatten.includes(final)) {
+            hints.push(splitTone(origPinyin)[0])
+            continue
+          }
+        }
+        if (state.enabledHints.includes(HintType.GiveCombination_IfBothExistsInOneGuess)) {
+          if (guessesPinyin.findIndex((pinyin) => {
+            const pinyinFlatten = pinyin.flatMap(([initial, final]) => [initial, final])
+            return pinyinFlatten.includes(initial) && pinyinFlatten.includes(final)
+          }) !== -1) {
+            hints.push(splitTone(origPinyin)[0])
+            continue
+          }
+        }
       }
       return hints
     },

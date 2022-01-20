@@ -1,6 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, test } from 'vitest'
-import { useGuessStore } from '../src/stores/guess'
+import { HintType, useGuessStore } from '../src/stores/guess'
 import { useIdiomsStore } from '../src/stores/idioms'
 import ALL_IDIOMS from '../public/idioms.json'
 
@@ -45,5 +45,35 @@ describe('Real Test', () => {
     guessStore.guessIdiom('左右逢源')
     expect(guessStore.guesses[2].result)
       .toEqual([[1, 1, true], [1, 0, false], [0, 0, false], [1, 0, false]])
+  })
+
+  test('hint give combination if both ever guessed', () => {
+    const guessStore = useGuessStore()
+    guessStore.enabledHints.push(HintType.GiveCombination_IfBothEverGuessed)
+    guessStore.guessIdiom('沉鱼落雁')
+    expect(guessStore.hints).toHaveLength(0)
+    guessStore.guessIdiom('张灯结彩')
+    expect(guessStore.hints).toEqual(['chang'])
+  })
+  test('hint give combination if both exists in one guess', () => {
+    const guessStore = useGuessStore()
+    guessStore.enabledHints.push(HintType.GiveCombination_IfBothExistsInOneGuess)
+    guessStore.guessIdiom('沉鱼落雁')
+    guessStore.guessIdiom('张灯结彩')
+    expect(guessStore.hints).toHaveLength(0)
+    guessStore.guessIdiom('如鱼得水')
+    expect(guessStore.hints).toEqual(['wei'])
+  })
+  test('hint give tone if combination correct', () => {
+    const guessStore = useGuessStore()
+    guessStore.enabledHints.push(HintType.GiveTone_IfCombinationCorrect)
+    guessStore.guessIdiom('怅然若失')
+    expect(guessStore.hints).toEqual(['chāng'])
+  })
+  test('hint give character if both position correct', () => {
+    const guessStore = useGuessStore()
+    guessStore.enabledHints.push(HintType.GiveCharacter_IfBothPositionCorrect)
+    guessStore.guessIdiom('五湖四海')
+    expect(guessStore.hints).toEqual(['虎'])
   })
 })

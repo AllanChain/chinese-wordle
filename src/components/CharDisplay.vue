@@ -29,7 +29,7 @@ const guessColors = {
         :class="guessResults[2] ? [ 'underline', 'underline-double', 'decoration-green-500' ] : []"
       >
         <div :class="`text-${guessColors[guessResults[0]]}`">
-          {{ pinyin[0] || '□' }}
+          {{ pinyin[0] || 'Ø' }}
         </div>
         <div class="text-blue-500 text-xs">
           +

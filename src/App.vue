@@ -84,8 +84,8 @@ fetch('idioms.json')
         放弃
       </button>
     </div>
-    <Hints v-if="guessStore.answerIdiom" :hints="guessStore.hints" />
     <div v-if="guessStore.guesses.length">
+      <Hints :hints="guessStore.hints" />
       <IdiomDispaly
         v-for="(guess, i) in guessStore.guesses"
         :key="i"
