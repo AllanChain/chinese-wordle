@@ -18,10 +18,7 @@ const guessColors = {
 </script>
 
 <template>
-  <div
-    class="m-2 p-1 w-16 h-16"
-    w:border="2 yellow-300 rounded-md dashed"
-  >
+  <div class="p-0.5 w-16 h-16">
     <div class="text-sm font-mono font-semibold">
       <div
         v-if="Array.isArray(pinyin) && guessResults"

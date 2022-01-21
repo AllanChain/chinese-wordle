@@ -19,7 +19,7 @@ const chars = computed(() => {
     <h1 class="text-lg text-center mb-2">
       待猜成语
     </h1>
-    <div class="flex justify-center">
+    <div class="flex justify-center *full-border">
       <CharDisplay
         v-for="(char, i) in chars"
         :key="i"
