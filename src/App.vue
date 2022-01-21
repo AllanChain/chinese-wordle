@@ -79,7 +79,7 @@ fetch(allIdiomsURL)
     :excluded="guessStore.excludeList"
     :included="guessStore.includeList"
   />
-  <div class="p-4 mx-auto max-w-lg">
+  <div class="p-4 mx-auto max-w-2xl">
     <div class="flex" w:border="b-1 solid gray-300" w:p="b-2">
       <button
         class="bg-blue-500 text-white rounded-md px-2 py-1"
@@ -110,15 +110,18 @@ fetch(allIdiomsURL)
           查看排除
         </button>
       </div>
-      <IdiomDispaly
-        v-for="(guess, i) in guessStore.guesses"
-        :key="i"
-        :idiom="guess.idiom"
-        :pinyin="guess.pinyin"
-        :guess-results="guess.result"
-      />
+      <div class="grid grid-cols-1 sm:grid-cols-2">
+        <IdiomDispaly
+          v-for="(guess, i) in guessStore.guesses"
+          :key="i"
+          :idiom="guess.idiom"
+          :pinyin="guess.pinyin"
+          :guess-results="guess.result"
+        />
+      </div>
     </div>
     <AboutGame v-else />
+    <div class="h-10" />
     <div class="fixed bottom-2 left-1/2 transform -translate-x-1/2">
       <FadeTransition>
         <div
