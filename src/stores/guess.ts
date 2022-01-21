@@ -147,7 +147,7 @@ export const useGuessStore = defineStore('guess', {
         const syllable = initial + final
         const origPinyin = this.answerOrigPinyin.split(' ')[index]
         if (this.enabledHints.includes(HintType.GiveCharacter_IfBothPositionCorrect)) {
-          if (this.guessesSyllables.findIndex(pinyin => pinyin.includes(syllable)) !== -1) {
+          if (this.guessesSyllables.findIndex(pinyin => pinyin[index] === syllable) !== -1) {
             hints.push(this.answerIdiom.charAt(index))
             continue
           }
