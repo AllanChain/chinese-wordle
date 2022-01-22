@@ -10,7 +10,7 @@ const emit = defineEmits(['update:modelValue'])
       v-if="modelValue"
       class="fixed w-full h-full flex justify-center items-center z-10"
       w:bg="opacity-25 black"
-      @click="emit('update:modelValue', !modelValue)"
+      @click.self="emit('update:modelValue', !modelValue)"
     >
       <div
         class="bg-white rounded-lg mx-3 max-w-md p-2"
