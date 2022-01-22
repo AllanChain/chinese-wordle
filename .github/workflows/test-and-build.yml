@@ -25,7 +25,7 @@ jobs:
           version: latest
           run_install: true
       - run: pnpm test
-      - run: pnpm build --base=https://cdn.jsdelivr.net/gh/AllanChain/chinese-wordle@gh-pages/
+      - run: pnpm build -- --base=https://cdn.jsdelivr.net/gh/AllanChain/chinese-wordle@gh-pages/
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
