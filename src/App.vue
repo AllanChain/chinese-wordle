@@ -136,7 +136,7 @@ fetch(allIdiomsURL)
           v-model="guessIdiom"
           maxlength="4"
           :disabled="gameEnded"
-          class="rounded-l px-2 w-48"
+          class="rounded-l px-2 w-32"
           w:border="1 solid gray-300"
           w:focus="ring ring-blue-400 border-blue-400"
           w:disabled="bg-gray-100"
