@@ -47,7 +47,7 @@ const showError = (message: string) => {
 
 const doGuess = () => {
   if (!guessStore.guessIdiom(guessIdiom.value))
-    showError('不是一个有效的四字成语')
+    showError('这个成语不在我们的词库里...')
 
   guessIdiom.value = ''
 }
