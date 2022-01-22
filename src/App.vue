@@ -19,6 +19,9 @@ const guessIdiom = ref('')
 const guessError = ref('')
 const hideGuessErrorHandle = ref<number|null>(null)
 
+const loadingIdiom = ref(true)
+const loadingError = ref(false)
+
 const showAbout = ref(localStorage.getItem('played-wordle') !== 'true')
 const showAnswer = ref(false)
 const showExclusion = ref(false)
@@ -52,23 +55,28 @@ const showError = (message: string) => {
 
 const doGuess = () => {
   if (!guessStore.guessIdiom(guessIdiom.value))
-    showError('这个成语不在我们的词库里...')
+    showError('它不在我们的词库里...')
 
   guessIdiom.value = ''
 }
 
-fetch(freqIdiomsURL)
-  .then(res => res.json())
-  .then((data) => {
-    idiomsStore.setFreqIdioms(data)
-    guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
-  })
-  .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))
+onMounted(async() => {
+  try {
+    const allIdiomsRes = await fetch(allIdiomsURL)
+    const allIdioms = await allIdiomsRes.json()
 
-fetch(allIdiomsURL)
-  .then(res => res.json())
-  .then(data => idiomsStore.setAllIdioms(data))
-  .catch(err => showError(`无法获取数据，请刷新\n${err.message.slice(0, 50)}`))
+    idiomsStore.setAllIdioms(allIdioms)
+    const freqIdiomsRes = await fetch(freqIdiomsURL)
+    const freqIdioms = await freqIdiomsRes.json()
+    idiomsStore.setFreqIdioms(freqIdioms)
+    guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
+    loadingIdiom.value = false
+  }
+  catch (err) {
+    loadingError.value = true
+    showError(`无法获取数据，请刷新\n${(err as any).message.slice(0, 50)}`)
+  }
+})
 
 </script>
 
@@ -130,17 +138,22 @@ fetch(allIdiomsURL)
       <FadeTransition>
         <div
           v-if="guessError"
-          class="px-2 py-1 rounded-md bg-red-500 text-white"
+          class="px-2 py-1 mb-1 rounded-md bg-red-500 text-white"
         >
           {{ guessError }}
         </div>
       </FadeTransition>
       <FadeTransition>
-        <div v-if="!gameEnded" class="flex justify-center mt-3">
+        <div
+          v-if="loadingIdiom"
+          class="text-center rounded mx-auto px-4 py-2 w-50 bg-yellow-100 text-yellow-800"
+        >
+          {{ loadingError ? '无法获取数据，请刷新' : '加载中...' }}
+        </div>
+        <div v-else-if="!gameEnded" class="flex justify-center">
           <input
             v-model="guessIdiom"
             maxlength="4"
-            :disabled="gameEnded"
             class="rounded-l px-2 w-32"
             w:border="1 solid gray-300"
             w:focus="ring ring-blue-400 border-blue-400"
@@ -149,7 +162,6 @@ fetch(allIdiomsURL)
           >
           <button
             class="rounded-r w-18"
-            :disabled="gameEnded"
             w:p="x-4 y-2"
             w:bg="blue-500 hover:blue-600 active:blue-700 disabled:blue-gray-400"
             w:text="white"
