@@ -50,6 +50,12 @@ describe('Real Test', () => {
       .toEqual([[1, 1, true], [1, 0, false], [0, 0, false], [1, 0, false]])
   })
 
+  test('invalid guess', () => {
+    const guessStore = useGuessStore()
+    expect(guessStore.guessIdiom('东施效颦')).toBe(true)
+    expect(guessStore.guessIdiom('我勒个去')).toBe(false)
+  })
+
   test('hint give combination if both ever guessed', () => {
     const guessStore = useGuessStore()
     guessStore.enabledHints = [HintType.GiveCombination_IfBothEverGuessed]
