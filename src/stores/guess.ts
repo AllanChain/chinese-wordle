@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Idiom } from './idioms'
 import { useIdiomsStore } from './idioms'
 import type { IdiomPinyin } from '@/pinyin'
-import { splitIdiomPinyin, splitTone } from '@/pinyin'
+import { charEqual, splitIdiomPinyin, splitTone } from '@/pinyin'
 
 export enum GuessResult {
   NotExists,
@@ -22,7 +22,7 @@ export enum HintType {
   GiveCombination_IfBothEverGuessed,
   GiveCombination_IfBothExistsInOneGuess,
   GiveTone_IfCombinationCorrect,
-  GiveCharacter_IfBothPositionCorrect,
+  GiveCharacter_IfPositionToneCorrect,
 }
 
 export const useGuessStore = defineStore('guess', {
@@ -33,7 +33,7 @@ export const useGuessStore = defineStore('guess', {
     enabledHints: [
       HintType.GiveCombination_IfBothEverGuessed,
       HintType.GiveTone_IfCombinationCorrect,
-      HintType.GiveCharacter_IfBothPositionCorrect,
+      HintType.GiveCharacter_IfPositionToneCorrect,
     ],
   }),
   getters: {
@@ -146,8 +146,8 @@ export const useGuessStore = defineStore('guess', {
         const [initial, final] = pinyin
         const syllable = initial + final
         const origPinyin = this.answerOrigPinyin.split(' ')[index]
-        if (this.enabledHints.includes(HintType.GiveCharacter_IfBothPositionCorrect)) {
-          if (this.guessesSyllables.findIndex(pinyin => pinyin[index] === syllable) !== -1) {
+        if (this.enabledHints.includes(HintType.GiveCharacter_IfPositionToneCorrect)) {
+          if (charEqual(pinyin, this.guesses[this.guesses.length - 1].pinyin[index])) {
             hints.push(this.answerIdiom.charAt(index))
             continue
           }

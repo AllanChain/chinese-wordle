@@ -75,10 +75,12 @@ describe('Real Test', () => {
   })
   test('hint give character if both position correct', () => {
     const guessStore = useGuessStore()
-    guessStore.enabledHints = [HintType.GiveCharacter_IfBothPositionCorrect]
+    guessStore.enabledHints = [HintType.GiveCharacter_IfPositionToneCorrect]
     guessStore.guessIdiom('怅然若失')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('五湖四海')
+    expect(guessStore.hints).toHaveLength(0)
+    guessStore.guessIdiom('调虎离山')
     expect(guessStore.hints).toEqual(['虎'])
     guessStore.guessIdiom('为虎作伥')
     expect(guessStore.won).toBe(true)

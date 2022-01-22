@@ -62,12 +62,6 @@ export const splitIdiomPinyin = (pinyin: string): IdiomPinyin => {
   return pinyin.split(' ').map(splitCharPinyin)
 }
 
-// export function removePinyinTone (pinyin: CharPinyin): CharPinyin
-// export function removePinyinTone (pinyin: IdiomPinyin): IdiomPinyin
-// export function removePinyinTone(pinyin: CharPinyin | IdiomPinyin) {
-//   return pinyin.map((p) => {
-//     if (Array.isArray(p))
-//       return [p[0], removeTone(p[1])]
-//     return removeTone(p)
-//   })
-// }
+export const charEqual = (a: CharPinyin, b: CharPinyin): boolean => {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
+}
