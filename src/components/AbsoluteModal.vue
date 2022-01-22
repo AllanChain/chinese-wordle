@@ -8,7 +8,7 @@ const emit = defineEmits(['update:modelValue'])
   <FadeTransition>
     <div
       v-if="modelValue"
-      class="absolute w-full h-full flex justify-center items-center z-10"
+      class="fixed w-full h-full flex justify-center items-center z-10"
       w:bg="opacity-25 black"
       @click="emit('update:modelValue', !modelValue)"
     >
