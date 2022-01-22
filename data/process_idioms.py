@@ -11,60 +11,67 @@ from pathlib import Path
 
 import pandas as pd
 import pypinyin
+from pypinyin_dict.pinyin_data import kxhc1983
+
+kxhc1983.load()
 
 HERE = Path(__file__).parent
 ASSETS = HERE.parent / "src" / "assets"
 
 
-def export_freq_idioms():
-    review_df = pd.read_table(HERE / "reviewed.txt", header=None, names=["word"])
-    xinhua_df = pd.read_json(HERE / "idiom.json")
-    idiom_df = pd.merge(review_df, xinhua_df, on="word", how="inner")
-
-    with open(ASSETS / "freq-idioms.json", "w") as f:
-        json.dump(idiom_df["word"].tolist(), f, ensure_ascii=False)
+correction_df = pd.read_csv(HERE / "correction.csv", index_col="word")
 
 
-def export_all_idioms():
-    all_idioms = []
-    output_idioms = {}
-
-    pypinyin.load_single_dict({ord("子"): "zǐ,zi"})
-
-    thu_df = pd.read_table(
-        HERE / "THUOCL_chengyu.txt", header=None, sep="\s+", names=["word", "freq"]
-    )
-    correction_df = pd.read_csv(HERE / "correction.csv", index_col="word")
-
-    with open(HERE / "idiom.json") as f:
-        s = f.read().replace("　", " ").replace("ɡ", "g")
-        all_idioms = json.loads(s)
-
-    for idiom in all_idioms:
-        if len(idiom["word"]) != 4:
+def suggest_pinyin(word, pinyin_x, pinyin_y):
+    pinyin_x_split = pinyin_x.split(" ")
+    pinyin_y_split = pinyin_y.split(" ")
+    pinyins = []
+    for i, char in enumerate(word):
+        if char == "一":
+            pinyins.append("yī")
             continue
-        pinyin = " ".join(
-            pypinyin.lazy_pinyin(
-                idiom["word"],
-                style=pypinyin.Style.TONE,
-                v_to_u=True,
-            )
-        )
-        if pinyin == idiom["pinyin"]:
-            output_idioms[idiom["word"]] = idiom["pinyin"]
+        if char == "不":
+            pinyins.append("bù")
+            continue
+        p = pypinyin.pinyin(char, heteronym=True)[0]
+        if len(p) == 1:
+            pinyins.append(p[0])
+        elif pinyin_x_split[i] in p:
+            pinyins.append(pinyin_x_split[i])
+        elif pinyin_y_split[i] in p:
+            pinyins.append(pinyin_y_split[i])
+        elif word in correction_df.index:
+            return correction_df.loc[word].pinyin
         else:
-            if idiom["word"] in thu_df["word"].values:
-                if idiom["word"] in correction_df.index:
-                    output_idioms[idiom["word"]] = correction_df.loc[
-                        idiom["word"]
-                    ].pinyin
-                else:
-                    print(idiom["word"], idiom["pinyin"], pinyin, sep=",")
-
-    with open(ASSETS / "all-idioms.json", "w") as f:
-        json.dump(output_idioms, f, ensure_ascii=False)
+            return ""
+    return " ".join(pinyins)
 
 
-if __name__ == "__main__":
-    export_freq_idioms()
-    export_all_idioms()
+xinhua_df = pd.read_json(HERE / "idiom.json")
+xinhua_df = xinhua_df[["word", "pinyin"]][xinhua_df.word.str.len() == 4]
+zdic_df = pd.read_table(
+    HERE / "zdic_cybs.txt", header=None, sep=": ", names=["word", "pinyin"]
+)
+zdic_df = zdic_df[zdic_df.word.str.len() == 4]
+cy_df = pd.merge(xinhua_df, zdic_df, on="word", how="inner")
+
+cy_df["pinyin"] = cy_df.apply(
+    lambda row: suggest_pinyin(row.word, row.pinyin_x, row.pinyin_y), axis=1
+)
+cy_df[(cy_df.pinyin_x != cy_df.pinyin) & (cy_df.pinyin_y != cy_df.pinyin)].to_csv(
+    HERE / "bad_df.csv", index=False
+)
+cy_df[cy_df.pinyin == ""].to_csv(HERE / "noop_df.csv", index=False)
+cy_df = cy_df[cy_df.pinyin != ""][["word", "pinyin"]]
+cy_df.to_csv(HERE / "zdic_df.csv", index=False)
+
+output_idioms = {word: pinyin for (_, word, pinyin) in cy_df.itertuples()}
+
+with open(ASSETS / "all-idioms.json", "w") as f:
+    json.dump(output_idioms, f, ensure_ascii=False)
+
+review_df = pd.read_table(HERE / "reviewed.txt", header=None, names=["word"])
+idiom_df = pd.merge(review_df, cy_df, on="word", how="inner")
+
+with open(ASSETS / "freq-idioms.json", "w") as f:
+    json.dump(idiom_df["word"].tolist(), f, ensure_ascii=False)
