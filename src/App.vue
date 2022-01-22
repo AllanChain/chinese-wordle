@@ -148,7 +148,7 @@ fetch(allIdiomsURL)
             @keyup.enter="doGuess"
           >
           <button
-            class="rounded-r w-16"
+            class="rounded-r w-18"
             :disabled="gameEnded"
             w:p="x-4 y-2"
             w:bg="blue-500 hover:blue-600 active:blue-700 disabled:blue-gray-400"
@@ -166,7 +166,7 @@ fetch(allIdiomsURL)
             <div>{{ guessStore.won ? '恭喜你' : '很遗憾' }}</div>
           </div>
           <button
-            class="rounded-r w-16"
+            class="rounded-r w-18"
             w:p="x-4 y-2"
             w:bg="indigo-500 hover:indigo-600 active:indigo-700"
             w:text="white"
