@@ -20,7 +20,7 @@ const chars = computed(
 </script>
 
 <template>
-  <div class="flex justify-center my-1 *full-border">
+  <div class="flex justify-center mt-1 *full-border">
     <CharDisplay
       v-for="(char, i) in chars"
       :key="i"
@@ -30,14 +30,3 @@ const chars = computed(
     />
   </div>
 </template>
-
-<style>
-.full-divide > :not([hidden]) {
-  border-width: 2px;
-  border-left-width: 0px;
-  border-color: yellow;
-}
-.full-divide > :not([hidden]):first-child {
-  border-left-width: 2px;
-}
-</style>

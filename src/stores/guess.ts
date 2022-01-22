@@ -114,6 +114,9 @@ export const useGuessStore = defineStore('guess', {
         )
       )
     },
+    lost(): boolean {
+      return this.guessedIdioms.length >= 10 && !this.won
+    },
     includeList(): string[] {
       if (this.answerPinyinFlatten === null) return []
       return this.answerPinyinFlatten.filter(p => this.guessesPinyinFlatten.includes(p))
