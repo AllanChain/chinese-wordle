@@ -131,7 +131,7 @@ onMounted(async() => {
         :pinyin="guess.pinyin"
         :guess-results="guess.result"
       />
-      <EmptyIdiomDisplay v-for="i in 10-guessStore.guesses.length" :key="i" />
+      <EmptyIdiomDisplay v-for="i in guessStore.totalChances-guessStore.guesses.length" :key="i" />
     </div>
     <div class="h-10" />
     <div class="fixed bottom-2 left-1/2 transform -translate-x-1/2">

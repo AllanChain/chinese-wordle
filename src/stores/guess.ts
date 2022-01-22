@@ -30,6 +30,7 @@ export const useGuessStore = defineStore('guess', {
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
     hints: [] as string[],
+    totalChances: 8,
     enabledHints: [
       HintType.GiveCombination_IfBothEverGuessed,
       HintType.GiveTone_IfCombinationCorrect,
@@ -115,7 +116,7 @@ export const useGuessStore = defineStore('guess', {
       )
     },
     lost(): boolean {
-      return this.guessedIdioms.length >= 10 && !this.won
+      return this.guessedIdioms.length >= this.totalChances && !this.won
     },
     includeList(): string[] {
       if (this.answerPinyinFlatten === null) return []
