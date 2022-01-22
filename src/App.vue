@@ -97,7 +97,7 @@ fetch(allIdiomsURL)
         class="flex-1"
         w:text="3xl center blue-900"
       >
-        猜成语
+        拼成语
       </h1>
       <button
         class="bg-emerald-200 rounded-md px-2 py-1"
