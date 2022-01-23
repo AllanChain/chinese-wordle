@@ -47,5 +47,22 @@ const getColor = (p: string) => {
         {{ final }}
       </div>
     </div>
+    <div class="flex ml-4 mt-2">
+      图例：
+      <div class="flex text-white">
+        <div class="*badge bg-gray-300">
+          排除
+        </div>
+        <div class="*badge bg-green-500">
+          包含
+        </div>
+        <div class="*badge bg-blue-400">
+          可能
+        </div>
+      </div>
+    </div>
+    <div class="text-sm ml-4 text-gray-800">
+      注：韵母表中未包含个别过于少见的韵母
+    </div>
   </AbsoluteModal>
 </template>
