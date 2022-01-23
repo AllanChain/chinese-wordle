@@ -48,7 +48,6 @@ const share = () => {
       />
     </div>
     <button
-      v-if="!isWechat"
       w:text="red-700"
       w:m="t-2"
       w:p="x-4 y-2"
