@@ -27,7 +27,7 @@ const share = () => {
   if (!isWechat)
     navigator.clipboard.writeText(shareLink.value)
   else
-    location.replace(shareLink.value)
+    history.pushState(null, '', shareLink.value)
 }
 </script>
 
