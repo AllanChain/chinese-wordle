@@ -107,6 +107,15 @@ const show = ref(true)
         库作了简单的自动校对。
         部分未能自动校对的一百来个成语被未被纳入列表。
       </p>
+      <h2 class="font-bold text-center my-2 text-violet-800">
+        分享
+      </h2>
+      <p class="mb-2">
+        可以直接截屏分享来晒本局成绩，也可在右上角的统计按钮中查看一些统计信息。
+      </p>
+      <p class="mb-2">
+        游戏结束后，点击复制链接按钮，邀请好友打开，即可让好友也来猜猜这个成语。
+      </p>
       <h2 class="font-bold text-center my-2 text-lime-800">
         项目
       </h2>
