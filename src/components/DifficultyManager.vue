@@ -2,6 +2,8 @@
 import { ref, watch } from 'vue'
 import { difficulties, useGuessStore } from '@/stores/guess'
 
+const props = defineProps<{ disabled: boolean }>()
+
 const selectedDifficulty = ref(localStorage.getItem('wordle-difficulty') ?? 'easy')
 const guessStore = useGuessStore()
 watch(
@@ -22,7 +24,7 @@ watch(
     w:border="1 blue-400 disabled:gray-400"
     w:bg="white disabled:gray-100"
     w:text="blue-900 disabled:gray-500"
-    :disabled="guessStore.guessedIdioms.length > 0"
+    :disabled="disabled"
   >
     <option
       v-for="(difficulty, key) in difficulties"

@@ -168,7 +168,9 @@ onMounted(async() => {
       </div>
     </div>
     <div class="flex my-2">
-      <DifficultyManager />
+      <DifficultyManager
+        :disabled="guessStore.guessedIdioms.length > 0 && !gameEnded"
+      />
       <Hints :hints="guessStore.hints" />
       <button
         class="bg-teal-500 text-white rounded-md h-8 w-22"
