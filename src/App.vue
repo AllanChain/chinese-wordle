@@ -167,11 +167,11 @@ onMounted(async() => {
         </button>
       </div>
     </div>
-    <div class="flex">
+    <div class="flex my-2">
       <DifficultyManager />
       <Hints :hints="guessStore.hints" />
       <button
-        class="bg-teal-500 text-white rounded-md px-2 my-1"
+        class="bg-teal-500 text-white rounded-md h-8 w-22"
         @click="showExclusion = true"
       >
         查看排除
