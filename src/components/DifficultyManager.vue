@@ -20,7 +20,7 @@ watch(
 <template>
   <select
     v-model="selectedDifficulty"
-    class="rounded-lg px-1 mx-2 h-8"
+    class="rounded-lg px-1 mr-2 h-8"
     w:border="1 blue-400 disabled:gray-400"
     w:bg="white disabled:gray-100"
     w:text="blue-900 disabled:gray-500"
