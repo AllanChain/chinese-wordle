@@ -24,6 +24,45 @@ export enum HintType {
   GiveTone_IfCombinationCorrect,
   GiveCharacter_IfPositionToneCorrect,
 }
+export interface Difficulty {
+  name: string
+  enabledHints: HintType[]
+}
+
+export const difficulties: Record<string, Difficulty> = {
+  easy: {
+    name: '简单',
+    enabledHints: [
+      HintType.GiveCombination_IfBothEverGuessed,
+      HintType.GiveTone_IfCombinationCorrect,
+      HintType.GiveCharacter_IfPositionToneCorrect,
+    ],
+  },
+  normal: {
+    name: '正常',
+    enabledHints: [
+      HintType.GiveCombination_IfBothEverGuessed,
+      HintType.GiveTone_IfCombinationCorrect,
+    ],
+  },
+  medium: {
+    name: '中等',
+    enabledHints: [
+      HintType.GiveCombination_IfBothExistsInOneGuess,
+      HintType.GiveTone_IfCombinationCorrect,
+    ],
+  },
+  hard: {
+    name: '困难',
+    enabledHints: [
+      HintType.GiveCombination_IfBothExistsInOneGuess,
+    ],
+  },
+  insane: {
+    name: '神仙',
+    enabledHints: [],
+  },
+}
 
 export const useGuessStore = defineStore('guess', {
   state: () => ({
@@ -31,11 +70,7 @@ export const useGuessStore = defineStore('guess', {
     guessedIdioms: [] as Idiom[],
     hints: [] as string[],
     totalChances: 8,
-    enabledHints: [
-      HintType.GiveCombination_IfBothEverGuessed,
-      HintType.GiveTone_IfCombinationCorrect,
-      HintType.GiveCharacter_IfPositionToneCorrect,
-    ],
+    difficulty: 'easy',
   }),
   getters: {
     answerOrigPinyin(state): string | null {
@@ -126,8 +161,19 @@ export const useGuessStore = defineStore('guess', {
       if (this.answerPinyinFlatten === null) return []
       return this.guessesPinyinFlatten.filter(p => !this.answerPinyinFlatten!.includes(p))
     },
+    enabledHints(): HintType[] {
+      return difficulties[this.difficulty].enabledHints
+    },
+    difficultyName(): string {
+      return difficulties[this.difficulty].name
+    },
   },
   actions: {
+    reset() {
+      this.answerIdiom = null
+      this.guessedIdioms = []
+      this.hints = []
+    },
     initAnswerIdiom(idiom: Idiom) {
       this.answerIdiom = idiom
     },

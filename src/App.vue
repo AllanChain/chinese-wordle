@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { Icon } from '@iconify/vue'
 import { useIdiomsStore } from './stores/idioms'
 import { useGuessStore } from './stores/guess'
 import IdiomDispaly from './components/IdiomDispaly.vue'
@@ -9,6 +10,8 @@ import Hints from './components/Hints.vue'
 import ExclusionModal from './components/ExclusionModal.vue'
 import EmptyIdiomDisplay from './components/EmptyIdiomDisplay.vue'
 import AboutModal from './components/AboutModal.vue'
+import DifficultyManager from './components/DifficultyManager.vue'
+import StatsModal from './components/StatsModal.vue'
 import allIdiomsURL from '@/assets/all-idioms.json?url'
 import freqIdiomsURL from '@/assets/freq-idioms.json?url'
 
@@ -24,21 +27,42 @@ const loadingError = ref(false)
 
 const showAbout = ref(localStorage.getItem('played-wordle') !== 'true')
 const showAnswer = ref(false)
+const showStats = ref(false)
 const showExclusion = ref(false)
 const givenUp = ref(false)
 const gameEnded = computed(() => {
   return givenUp.value || guessStore.lost || guessStore.won
 })
+
+const guessRecord = ref(JSON.parse(localStorage.getItem('wordle-guess-record') ?? '[]'))
+const addGuessRecord = (guessCount: number) => {
+  guessRecord.value.push(guessCount)
+  localStorage.setItem('wordle-guess-record', JSON.stringify(guessRecord.value))
+}
+
 watch(
   () => guessStore.lost,
-  () => { if (guessStore.lost) showAnswer.value = true },
+  () => {
+    if (guessStore.lost) {
+      showAnswer.value = true
+      addGuessRecord(-1)
+    }
+  },
+  { immediate: false },
+)
+watch(
+  () => guessStore.won,
+  () => {
+    if (guessStore.won)
+      addGuessRecord(guessStore.guessedIdioms.length)
+  },
   { immediate: false },
 )
 
 onMounted(() => localStorage.setItem('played-wordle', 'true'))
 
 const reDo = () => {
-  guessStore.$reset()
+  guessStore.reset()
   guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
   givenUp.value = false
 }
@@ -82,6 +106,7 @@ onMounted(async() => {
 
 <template>
   <AboutModal v-model="showAbout" />
+  <StatsModal v-model="showStats" :guess-record="guessRecord" />
   <AnswerModal
     v-if="guessStore.answerIdiom && guessStore.answerOrigPinyin"
     v-model="showAnswer"
@@ -95,26 +120,37 @@ onMounted(async() => {
   />
   <div class="p-4 mx-auto max-w-2xl">
     <div class="flex" w:border="b-1 solid gray-300" w:p="b-2">
-      <button
-        class="bg-red-400 text-white rounded-md px-2 py-1"
-        @click="showAnswer = true, givenUp = true"
-      >
-        放弃
-      </button>
+      <div class="flex justify-center w-18">
+        <button
+          class="bg-red-400 text-white rounded-md px-2 py-1"
+          @click="showAnswer = true; givenUp = true; addGuessRecord(-1)"
+        >
+          放弃
+        </button>
+      </div>
       <h1
         class="flex-1"
         w:text="3xl center blue-900"
       >
         拼成语
       </h1>
-      <button
-        class="bg-emerald-200 rounded-md px-2 py-1"
-        @click="showAbout = true"
-      >
-        关于
-      </button>
+      <div class="flex justify-center w-18">
+        <button
+          class="text-emerald-700 text-xl mx-2"
+          @click="showStats = true"
+        >
+          <Icon icon="ion:ios-stats" />
+        </button>
+        <button
+          class="text-emerald-700 text-xl mx-2"
+          @click="showAbout = true"
+        >
+          <Icon icon="ph:info-bold" />
+        </button>
+      </div>
     </div>
     <div class="flex">
+      <DifficultyManager />
       <Hints :hints="guessStore.hints" />
       <button
         class="bg-teal-500 text-white rounded-md px-2 my-1"
