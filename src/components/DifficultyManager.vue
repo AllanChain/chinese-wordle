@@ -7,8 +7,10 @@ const guessStore = useGuessStore()
 watch(
   selectedDifficulty,
   () => {
-    guessStore.difficulty = selectedDifficulty.value
-    localStorage.setItem('wordle-difficulty', selectedDifficulty.value)
+    if (selectedDifficulty.value in difficulties) {
+      guessStore.difficulty = difficulties[selectedDifficulty.value]
+      localStorage.setItem('wordle-difficulty', selectedDifficulty.value)
+    }
   },
 )
 </script>

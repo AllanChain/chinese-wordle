@@ -70,7 +70,7 @@ export const useGuessStore = defineStore('guess', {
     guessedIdioms: [] as Idiom[],
     hints: [] as string[],
     totalChances: 8,
-    difficulty: 'easy',
+    difficulty: difficulties.easy,
   }),
   getters: {
     answerOrigPinyin(state): string | null {
@@ -162,10 +162,10 @@ export const useGuessStore = defineStore('guess', {
       return this.guessesPinyinFlatten.filter(p => !this.answerPinyinFlatten!.includes(p))
     },
     enabledHints(): HintType[] {
-      return difficulties[this.difficulty].enabledHints
+      return this.difficulty.enabledHints
     },
     difficultyName(): string {
-      return difficulties[this.difficulty].name
+      return this.difficulty.name
     },
   },
   actions: {
