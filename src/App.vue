@@ -220,7 +220,7 @@ onMounted(async() => {
         </div>
         <div v-else class="flex">
           <div
-            class="flex px-2 w-28 bg-gray-100 items-center justify-center"
+            class="flex px-2 w-28 rounded-l bg-gray-100 items-center justify-center"
             :class="guessStore.won ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'"
           >
             <div>{{ guessStore.won ? '恭喜你' : '很遗憾' }}</div>
