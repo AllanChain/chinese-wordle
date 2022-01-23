@@ -12,6 +12,7 @@ import EmptyIdiomDisplay from './components/EmptyIdiomDisplay.vue'
 import AboutModal from './components/AboutModal.vue'
 import DifficultyManager from './components/DifficultyManager.vue'
 import StatsModal from './components/StatsModal.vue'
+import { xorStrings } from './xor-crypt'
 import allIdiomsURL from '@/assets/all-idioms.json?url'
 import freqIdiomsURL from '@/assets/freq-idioms.json?url'
 
@@ -23,7 +24,7 @@ const guessError = ref('')
 const hideGuessErrorHandle = ref<number|null>(null)
 
 const loadingIdiom = ref(true)
-const loadingError = ref(false)
+const loadingError = ref('')
 
 const showAbout = ref(localStorage.getItem('played-wordle') !== 'true')
 const showAnswer = ref(false)
@@ -53,8 +54,10 @@ watch(
 watch(
   () => guessStore.won,
   () => {
-    if (guessStore.won)
+    if (guessStore.won) {
+      showAnswer.value = true
       addGuessRecord(guessStore.guessedIdioms.length)
+    }
   },
   { immediate: false },
 )
@@ -93,15 +96,23 @@ onMounted(async() => {
     const freqIdiomsRes = await fetch(freqIdiomsURL)
     const freqIdioms = await freqIdiomsRes.json()
     idiomsStore.setFreqIdioms(freqIdioms)
-    guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
+    const idiom = new URL(location.href).searchParams.get('idiom')
+
+    if (idiom && idiomsStore.isValidIdiom(idiom)) {
+      guessStore.initAnswerIdiom(xorStrings('cnwordle', idiom))
+    }
+    else {
+      if (idiom) loadingError.value = '分享无效，刷新重开'
+      guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
+    }
+
+    history.pushState(null, '', location.href.split('?')[0])
     loadingIdiom.value = false
   }
   catch (err) {
-    loadingError.value = true
-    showError(`无法获取数据，请刷新\n${(err as any).message.slice(0, 50)}`)
+    loadingError.value = '获取失败，请刷新'
   }
 })
-
 </script>
 
 <template>
@@ -112,6 +123,7 @@ onMounted(async() => {
     v-model="showAnswer"
     :answer="guessStore.answerIdiom"
     :answer-pinyin="guessStore.answerOrigPinyin"
+    :won="guessStore.won"
   />
   <ExclusionModal
     v-model="showExclusion"
@@ -125,7 +137,7 @@ onMounted(async() => {
           class="bg-red-400 text-white rounded-md px-2 py-1"
           @click="showAnswer = true; givenUp = true; addGuessRecord(-1)"
         >
-          放弃
+          答案
         </button>
       </div>
       <h1
@@ -181,10 +193,10 @@ onMounted(async() => {
       </FadeTransition>
       <FadeTransition>
         <div
-          v-if="loadingIdiom"
+          v-if="loadingIdiom || loadingError"
           class="text-center rounded mx-auto px-4 py-2 w-50 bg-yellow-100 text-yellow-800"
         >
-          {{ loadingError ? '无法获取数据，请刷新' : '加载中...' }}
+          {{ loadingError || '加载中...' }}
         </div>
         <div v-else-if="!gameEnded" class="flex justify-center">
           <input
@@ -208,7 +220,7 @@ onMounted(async() => {
         </div>
         <div v-else class="flex">
           <div
-            class="flex rounded-l px-2 w-32 bg-gray-100 items-center justify-center"
+            class="flex px-2 w-28 bg-gray-100 items-center justify-center"
             :class="guessStore.won ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'"
           >
             <div>{{ guessStore.won ? '恭喜你' : '很遗憾' }}</div>
