@@ -56,7 +56,7 @@ const countDistribution = computed(() => {
         <div
           class="bg-yellow-300 h-4 mx-2 px-2 flex justify-end items-center"
           w:border="rounded-md"
-          :style="{ width: `calc(10px + ${countGuesses / guessRecord.length * 80}%)` }"
+          :style="{ width: `calc(28px + ${countGuesses / guessRecord.length * 80}%)` }"
         >
           {{ countGuesses }}
         </div>
