@@ -98,11 +98,17 @@ onMounted(async() => {
     idiomsStore.setFreqIdioms(freqIdioms)
     const idiom = new URL(location.href).searchParams.get('idiom')
 
-    if (idiom && idiomsStore.isValidIdiom(idiom)) {
-      guessStore.initAnswerIdiom(xorStrings('cnwordle', idiom))
+    if (idiom) {
+      const decodedIdiom = xorStrings('cnwordle', idiom)
+      if (freqIdioms.includes(decodedIdiom)) {
+        guessStore.initAnswerIdiom(decodedIdiom)
+      }
+      else {
+        loadingError.value = '分享无效，刷新重开'
+        guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
+      }
     }
     else {
-      if (idiom) loadingError.value = '分享无效，刷新重开'
       guessStore.initAnswerIdiom(idiomsStore.randomIdiom())
     }
 
