@@ -171,7 +171,7 @@ onMounted(async() => {
       <DifficultyManager
         :disabled="guessStore.guessedIdioms.length > 0 && !gameEnded"
       />
-      <Hints :hints="guessStore.hints" />
+      <Hints :hints="guessStore.hints.map(hint => hint.content)" />
       <button
         class="bg-teal-500 text-white rounded-md h-8 w-22"
         @click="showExclusion = true"

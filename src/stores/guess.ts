@@ -18,11 +18,25 @@ export interface Guess {
   origPinyin: string
   result: IdiomGuessResult
 }
-export enum HintType {
-  GiveCombination_IfBothEverGuessed,
-  GiveCombination_IfBothExistsInOneGuess,
-  GiveTone_IfCombinationCorrect,
-  GiveCharacter_IfPositionToneCorrect,
+export enum HintCondition {
+  BothEverGuessed,
+  BothExistsInOneGuess,
+  CombinationCorrect,
+  PositionAndToneCorrect,
+}
+export enum HintTarget {
+  Combination,
+  CombinationAndTone,
+  Char,
+}
+export interface HintType {
+  on: HintCondition
+  give: HintTarget
+}
+export interface Hint {
+  charIndex: number
+  content: string
+  level: HintTarget
 }
 export interface Difficulty {
   name: string
@@ -33,29 +47,29 @@ export const difficulties: Record<string, Difficulty> = {
   easy: {
     name: '简单',
     enabledHints: [
-      HintType.GiveCombination_IfBothEverGuessed,
-      HintType.GiveTone_IfCombinationCorrect,
-      HintType.GiveCharacter_IfPositionToneCorrect,
+      { on: HintCondition.BothEverGuessed, give: HintTarget.Combination },
+      { on: HintCondition.CombinationCorrect, give: HintTarget.CombinationAndTone },
+      { on: HintCondition.PositionAndToneCorrect, give: HintTarget.Char },
     ],
   },
   normal: {
     name: '正常',
     enabledHints: [
-      HintType.GiveCombination_IfBothEverGuessed,
-      HintType.GiveTone_IfCombinationCorrect,
+      { on: HintCondition.BothEverGuessed, give: HintTarget.Combination },
+      { on: HintCondition.CombinationCorrect, give: HintTarget.CombinationAndTone },
     ],
   },
   medium: {
     name: '中等',
     enabledHints: [
-      HintType.GiveCombination_IfBothExistsInOneGuess,
-      HintType.GiveTone_IfCombinationCorrect,
+      { on: HintCondition.BothExistsInOneGuess, give: HintTarget.Combination },
+      { on: HintCondition.CombinationCorrect, give: HintTarget.CombinationAndTone },
     ],
   },
   hard: {
     name: '困难',
     enabledHints: [
-      HintType.GiveCombination_IfBothExistsInOneGuess,
+      { on: HintCondition.BothExistsInOneGuess, give: HintTarget.Combination },
     ],
   },
   insane: {
@@ -68,7 +82,7 @@ export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
-    hints: [] as string[],
+    hints: [] as Hint[],
     totalChances: 8,
     difficulty: difficulties.easy,
   }),
@@ -131,14 +145,14 @@ export const useGuessStore = defineStore('guess', {
         return pinyin.flatMap(([initial, final]) => [initial, final])
       })
     },
-    guessesSyllables(): string[][] {
-      return this.guessesPinyin.map((pinyin) => {
-        return pinyin.map(([initial, final]) => initial + final)
-      })
-    },
-    guessesSyllablesFlatten(): string[] {
-      return this.guessesSyllables.flat()
-    },
+    // guessesSyllables(): string[][] {
+    //   return this.guessesPinyin.map((pinyin) => {
+    //     return pinyin.map(([initial, final]) => initial + final)
+    //   })
+    // },
+    // guessesSyllablesFlatten(): string[] {
+    //   return this.guessesSyllables.flat()
+    // },
     won(): boolean {
       return (
         this.guesses.length !== 0
@@ -161,12 +175,22 @@ export const useGuessStore = defineStore('guess', {
       if (this.answerPinyinFlatten === null) return []
       return this.guessesPinyinFlatten.filter(p => !this.answerPinyinFlatten!.includes(p))
     },
-    enabledHints(): HintType[] {
-      return this.difficulty.enabledHints
-    },
+    // enabledHints(): HintType[] {
+    //   return this.difficulty.enabledHints.sort((a, b) => a.give - b.give)
+    // },
     difficultyName(): string {
       return this.difficulty.name
     },
+    // give() {
+    //   return (index: number, target: HintTarget) => {
+    //     switch (target) {
+    //       case HintTarget.Char:
+    //         return this.answerIdiom?.charAt(index)
+    //       case HintTarget.Combination:
+    //         return this.answerPinyin?.[index]?.[0]
+    //     }
+    //   }
+    // },
   },
   actions: {
     reset() {
@@ -191,43 +215,71 @@ export const useGuessStore = defineStore('guess', {
     },
     updateHints() {
       if (!this.answerIdiom || !this.answerOrigPinyin) return []
-      const hints: string[] = []
+      const lastGuess = this.guesses[this.guesses.length - 1]
+      const lastGuessSyllables = lastGuess.pinyin.map(([initial, final]) => initial + final)
+      const lastGuessPinyinFlatten = lastGuess.pinyin.flatMap(([initial, final]) => [initial, final])
+      const hints: Hint[] = []
       for (const [index, pinyin] of this.answerPinyin!.entries()) {
         const [initial, final] = pinyin
         const syllable = initial + final
         const origPinyin = this.answerOrigPinyin.split(' ')[index]
-        if (this.enabledHints.includes(HintType.GiveCharacter_IfPositionToneCorrect)) {
-          if (charEqual(pinyin, this.guesses[this.guesses.length - 1].pinyin[index])) {
-            hints.push(this.answerIdiom.charAt(index))
-            continue
-          }
-        }
-        if (this.enabledHints.includes(HintType.GiveTone_IfCombinationCorrect)) {
-          if (this.guessesSyllablesFlatten.includes(syllable)) {
-            hints.push(origPinyin)
-            continue
-          }
-        }
-        if (this.enabledHints.includes(HintType.GiveCombination_IfBothEverGuessed)) {
+        const highestLevelThisChar = Math.max(
+          ...this.hints.filter(hint => hint.charIndex === index).map(hint => hint.level),
+        )
+        const hintTypes = this.difficulty.enabledHints.filter(
+          hint => hint.give > highestLevelThisChar,
+        )
+        let give: HintTarget | -1 = -1
+        for (const hintType of hintTypes) {
+          if (hintType.give <= give) continue
           if (
-            this.guessesPinyinFlatten.includes(initial)
+            hintType.on === HintCondition.BothEverGuessed
+            && this.guessesPinyinFlatten.includes(initial)
             && this.guessesPinyinFlatten.includes(final)
-          ) {
-            hints.push(splitTone(origPinyin)[0])
-            continue
-          }
+            && (
+              lastGuessPinyinFlatten.includes(initial)
+              || lastGuessPinyinFlatten.includes(final)
+            )
+          )
+            give = hintType.give
+          else if (
+            hintType.on === HintCondition.BothExistsInOneGuess
+            && lastGuessPinyinFlatten.includes(initial)
+            && lastGuessPinyinFlatten.includes(final)
+          )
+            give = hintType.give
+          else if (
+            hintType.on === HintCondition.CombinationCorrect
+            && lastGuessSyllables.includes(syllable)
+          )
+            give = hintType.give
+          else if (
+            hintType.on === HintCondition.PositionAndToneCorrect
+            && charEqual(pinyin, lastGuess.pinyin[index])
+          )
+            give = hintType.give
         }
-        if (this.enabledHints.includes(HintType.GiveCombination_IfBothExistsInOneGuess)) {
-          if (this.guessesPinyin.findIndex((pinyin) => {
-            const pinyinFlatten = pinyin.flatMap(([initial, final]) => [initial, final])
-            return pinyinFlatten.includes(initial) && pinyinFlatten.includes(final)
-          }) !== -1) {
-            hints.push(splitTone(origPinyin)[0])
-            continue
-          }
+
+        if (give === -1) continue
+        let hintContent: string
+        switch (give) {
+          case HintTarget.Char:
+            hintContent = this.answerIdiom.charAt(index)
+            break
+          case HintTarget.Combination:
+            hintContent = splitTone(origPinyin)[0]
+            break
+          case HintTarget.CombinationAndTone:
+            hintContent = origPinyin
+            break
         }
+        hints.push({
+          charIndex: index,
+          content: hintContent,
+          level: give,
+        })
       }
-      this.hints.push(...hints.filter(hint => !this.hints.includes(hint)))
+      this.hints.push(...hints)
     },
   },
 })

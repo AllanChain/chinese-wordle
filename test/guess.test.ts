@@ -1,6 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, test } from 'vitest'
-import { HintType, useGuessStore } from '../src/stores/guess'
+import { HintCondition, HintTarget, useGuessStore } from '../src/stores/guess'
 import { useIdiomsStore } from '../src/stores/idioms'
 import ALL_IDIOMS from '../src/assets/all-idioms.json'
 import FREQ_IDIOMS from '../src/assets/freq-idioms.json'
@@ -60,48 +60,119 @@ describe('Real Test', () => {
     const guessStore = useGuessStore()
     guessStore.difficulty = {
       name: 'test',
-      enabledHints: [HintType.GiveCombination_IfBothEverGuessed],
+      enabledHints: [{
+        on: HintCondition.BothEverGuessed,
+        give: HintTarget.Combination,
+      }],
     }
     guessStore.guessIdiom('沉鱼落雁')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('张灯结彩')
-    expect(guessStore.hints).toEqual(['chang'])
+    expect(guessStore.hints).toEqual([{
+      charIndex: 3,
+      content: 'chang',
+      level: HintTarget.Combination,
+    }])
   })
   test('hint give combination if both exists in one guess', () => {
     const guessStore = useGuessStore()
     guessStore.difficulty = {
       name: 'test',
-      enabledHints: [HintType.GiveCombination_IfBothExistsInOneGuess],
+      enabledHints: [{
+        on: HintCondition.BothExistsInOneGuess,
+        give: HintTarget.Combination,
+      }],
     }
     guessStore.guessIdiom('沉鱼落雁')
     guessStore.guessIdiom('张灯结彩')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('如鱼得水')
-    expect(guessStore.hints).toEqual(['wei'])
+    expect(guessStore.hints).toEqual([{
+      charIndex: 0,
+      content: 'wei',
+      level: HintTarget.Combination,
+    }])
   })
   test('hint give tone if combination correct', () => {
     const guessStore = useGuessStore()
     guessStore.difficulty = {
       name: 'test',
-      enabledHints: [HintType.GiveTone_IfCombinationCorrect],
+      enabledHints: [{
+        on: HintCondition.CombinationCorrect,
+        give: HintTarget.CombinationAndTone,
+      }],
     }
     guessStore.guessIdiom('怅然若失')
-    expect(guessStore.hints).toEqual(['chāng'])
+    expect(guessStore.hints).toEqual([{
+      charIndex: 3,
+      content: 'chāng',
+      level: HintTarget.CombinationAndTone,
+    }])
   })
-  test('hint give character if both position correct', () => {
+  test('hint give character if both position and tone correct', () => {
     const guessStore = useGuessStore()
     guessStore.difficulty = {
       name: 'test',
-      enabledHints: [HintType.GiveCharacter_IfPositionToneCorrect],
+      enabledHints: [{
+        on: HintCondition.PositionAndToneCorrect,
+        give: HintTarget.Char,
+      }],
     }
     guessStore.guessIdiom('怅然若失')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('五湖四海')
     expect(guessStore.hints).toHaveLength(0)
     guessStore.guessIdiom('调虎离山')
-    expect(guessStore.hints).toEqual(['虎'])
+    expect(guessStore.hints).toEqual([{
+      charIndex: 1,
+      content: '虎',
+      level: HintTarget.Char,
+    }])
     guessStore.guessIdiom('为虎作伥')
     expect(guessStore.won).toBe(true)
     expect(guessStore.hints).toHaveLength(1)
+  })
+  test('hint race', () => {
+    const guessStore = useGuessStore()
+    guessStore.difficulty = {
+      name: 'test',
+      enabledHints: [
+        { on: HintCondition.BothEverGuessed, give: HintTarget.Combination },
+        { on: HintCondition.PositionAndToneCorrect, give: HintTarget.Char },
+      ],
+    }
+    guessStore.guessIdiom('调虎离山')
+    expect(guessStore.hints).toEqual([{
+      charIndex: 1,
+      content: '虎',
+      level: HintTarget.Char,
+    }])
+    guessStore.guessIdiom('风花雪月')
+    expect(guessStore.hints).toHaveLength(1)
+  })
+})
+
+describe('Special cases', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    const idioms = useIdiomsStore()
+    idioms.setAllIdioms(ALL_IDIOMS)
+    idioms.setFreqIdioms(FREQ_IDIOMS)
+  })
+
+  test('a', () => {
+    const guessStore = useGuessStore()
+    guessStore.difficulty = {
+      name: 'test',
+      enabledHints: [
+        { on: HintCondition.BothEverGuessed, give: HintTarget.Combination },
+        { on: HintCondition.CombinationCorrect, give: HintTarget.CombinationAndTone },
+        { on: HintCondition.PositionAndToneCorrect, give: HintTarget.Char },
+      ],
+    }
+    guessStore.initAnswerIdiom('蛛丝马迹')
+    guessStore.guessIdiom('视死如归')
+    expect(guessStore.hints).toHaveLength(1)
+    expect(guessStore.hints[0].content).toBe('sī')
   })
 })
