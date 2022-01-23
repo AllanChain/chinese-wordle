@@ -46,17 +46,22 @@ const countDistribution = computed(() => {
     <h2 class="text-center my-2">
       猜测次数统计
     </h2>
-    <div class="min-w-60 ml-6 font-mono text-yellow-800">
+    <div class="min-w-72 font-mono text-yellow-800">
+      <div v-if="countDistribution.length === 0" class="text-center">
+        暂无数据
+      </div>
       <div
         v-for="({ count, countGuesses }) in countDistribution"
         :key="count"
         class="flex items-center"
       >
-        <div>{{ count }}</div>
+        <div class="ml-6">
+          {{ count }}
+        </div>
         <div
           class="bg-yellow-300 h-4 mx-2 px-2 flex justify-end items-center"
           w:border="rounded-md"
-          :style="{ width: `calc(28px + ${countGuesses / guessRecord.length * 80}%)` }"
+          :style="{ width: `calc(28px + ${countGuesses / guessRecord.length * 65}%)` }"
         >
           {{ countGuesses }}
         </div>
