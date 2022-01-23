@@ -14,7 +14,9 @@ const show = ref(true)
       </h1>
       <p class="mb-2">
         <b>太长不看：</b>
-        这是一个根据声母和韵母猜成语的小游戏。必须输入一个合法的成语。
+        这是一个根据声母和韵母猜成语的小游戏。
+        必须输入一个合法的成语。
+        尽量在浏览器打开，而非微信。
       </p>
       <h2 class="font-bold text-center my-2 text-green-800">
         颜色提示

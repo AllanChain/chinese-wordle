@@ -15,10 +15,19 @@ const chars = computed(() => {
   }))
 })
 
-const share = () => {
+const shareLink = computed(() => {
   const url = new URL(location.href)
   url.searchParams.set('idiom', xorStrings('cnwordle', props.answer))
-  navigator.clipboard.writeText(url.href)
+  return url.href
+})
+
+const isWechat = navigator.userAgent.includes('MicroMessenger')
+
+const share = () => {
+  if (!isWechat)
+    navigator.clipboard.writeText(shareLink.value)
+  else
+    location.replace(shareLink.value)
 }
 </script>
 
@@ -39,6 +48,7 @@ const share = () => {
       />
     </div>
     <button
+      v-if="!isWechat"
       w:text="red-700"
       w:m="t-2"
       w:p="x-4 y-2"
@@ -47,8 +57,8 @@ const share = () => {
       w:bg="hover:red-100 active:red-200"
       @click="share"
     >
-      <Icon icon="mdi:link-variant" />
-      复制成语链接向他人发起挑战
+      <Icon v-if="!isWechat" icon="mdi:link-variant" />
+      {{ isWechat ? '点击后复制网址向他人发起挑战' : '复制成语链接向他人发起挑战' }}
     </button>
   </AbsoluteModal>
 </template>
