@@ -21,6 +21,7 @@ const show = ref(true)
       <h2 class="font-bold text-center my-2 text-green-800">
         颜色提示
       </h2>
+      <img src="/color-explain.jpg" width="300" class="mx-auto">
       <p class="mb-2">
         如果你猜的成语中某一个声母或韵母：
         <ul class="list-circle list-inside my-1">
@@ -34,7 +35,7 @@ const show = ref(true)
         其他提示
       </h2>
       <p class="mb-2">
-        事实证明如果只有颜色的提示，猜成语会比较困难。所以游戏中还有其他提示，比如：
+        事实证明如果只有颜色的提示，猜成语会比较困难。所以游戏上方还有一栏提示，比如在简单版中：
         <ul class="list-circle list-inside my-1">
           <li>
             待猜成语的某个字的声母和韵母：
@@ -45,6 +46,9 @@ const show = ref(true)
           </li>
           <li>所猜的成语的某个字的与待猜成语相同位置的字发音相同，则提示这个字</li>
         </ul>
+      </p>
+      <p class="mb-2">
+        不同难度选择的区别也就在于这部分提示的多少和获得提示的难度。
       </p>
       <h2 class="font-bold text-center my-2 text-indigo-800">
         拼音
