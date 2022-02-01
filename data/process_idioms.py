@@ -14,6 +14,13 @@ import pypinyin
 from pypinyin_dict.pinyin_data import kxhc1983
 
 kxhc1983.load()
+pypinyin.load_single_dict(
+    {
+        ord("迹"): "jì",
+        ord("绩"): "jì",
+        ord("卓"): "zhuó",
+    }
+)
 
 HERE = Path(__file__).parent
 ASSETS = HERE.parent / "src" / "assets"
@@ -29,9 +36,6 @@ def suggest_pinyin(word, pinyin_x, pinyin_y):
     for i, char in enumerate(word):
         if char == "一":
             pinyins.append("yī")
-            continue
-        if char == "不":
-            pinyins.append("bù")
             continue
         p = pypinyin.pinyin(char, heteronym=True)[0]
         if len(p) == 1:
