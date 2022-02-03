@@ -19,6 +19,8 @@ import freqIdiomsURL from '@/assets/freq-idioms.json?url'
 const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
 
+const idiomInput = ref<HTMLInputElement | null>(null)
+
 const guessIdiom = ref('')
 const guessError = ref('')
 const hideGuessErrorHandle = ref<number|null>(null)
@@ -187,7 +189,11 @@ onMounted(async() => {
         :pinyin="guess.pinyin"
         :guess-results="guess.result"
       />
-      <EmptyIdiomDisplay v-for="i in guessStore.totalChances-guessStore.guesses.length" :key="i" />
+      <EmptyIdiomDisplay
+        v-for="i in guessStore.totalChances-guessStore.guesses.length"
+        :key="i"
+        @click="idiomInput?.focus()"
+      />
     </div>
     <div class="h-10" />
     <div class="fixed bottom-2 left-1/2 transform -translate-x-1/2">
@@ -208,6 +214,7 @@ onMounted(async() => {
         </div>
         <div v-else-if="!gameEnded" class="flex justify-center">
           <input
+            ref="idiomInput"
             v-model="guessIdiom"
             maxlength="4"
             class="rounded-l px-2 w-32"
