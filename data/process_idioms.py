@@ -7,6 +7,7 @@ correction.csv 中是在 THUOCL 中的成语，利用 pypinyin 和“新华词�
 """
 
 import json
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -25,11 +26,13 @@ pypinyin.load_single_dict(
 HERE = Path(__file__).parent
 ASSETS = HERE.parent / "src" / "assets"
 
+TONGJIAZI_PATTERN = r'(?:["，。]|^)([^"，。])通[^"，。]["“”，。]'
+
 
 correction_df = pd.read_csv(HERE / "correction.csv", index_col="word")
 
 
-def suggest_pinyin(word, pinyin_x, pinyin_y):
+def suggest_pinyin(word, pinyin_x, pinyin_y, explanation):
     pinyin_x_split = pinyin_x.split(" ")
     pinyin_y_split = pinyin_y.split(" ")
     pinyins = []
@@ -38,7 +41,9 @@ def suggest_pinyin(word, pinyin_x, pinyin_y):
             pinyins.append("yī")
             continue
         p = pypinyin.pinyin(char, heteronym=True)[0]
-        if len(p) == 1:
+        if char in re.findall(TONGJIAZI_PATTERN, explanation):
+            pinyins.append(pinyin_x_split[i])
+        elif len(p) == 1:
             pinyins.append(p[0])
         elif pinyin_x_split[i] in p:
             pinyins.append(pinyin_x_split[i])
@@ -52,16 +57,22 @@ def suggest_pinyin(word, pinyin_x, pinyin_y):
 
 
 xinhua_df = pd.read_json(HERE / "idiom.json")
-xinhua_df = xinhua_df[["word", "pinyin"]][xinhua_df.word.str.len() == 4]
+xinhua_df = xinhua_df[["word", "pinyin", "explanation"]][xinhua_df.word.str.len() == 4]
 zdic_df = pd.read_table(
-    HERE / "zdic_cybs.txt", header=None, sep=": ", names=["word", "pinyin"]
+    HERE / "zdic_cybs.txt",
+    header=None,
+    sep=": ",
+    names=["word", "pinyin"],
+    engine="python",
 )
 zdic_df = zdic_df[zdic_df.word.str.len() == 4]
 cy_df = pd.merge(xinhua_df, zdic_df, on="word", how="inner")
 
 cy_df["pinyin"] = cy_df.apply(
-    lambda row: suggest_pinyin(row.word, row.pinyin_x, row.pinyin_y), axis=1
+    lambda row: suggest_pinyin(row.word, row.pinyin_x, row.pinyin_y, row.explanation),
+    axis=1,
 )
+cy_df.drop(["explanation"], axis=1, inplace=True)
 cy_df[(cy_df.pinyin_x != cy_df.pinyin) & (cy_df.pinyin_y != cy_df.pinyin)].to_csv(
     HERE / "bad_df.csv", index=False
 )
