@@ -36,12 +36,13 @@ def suggest_pinyin(word, pinyin_x, pinyin_y, explanation):
     pinyin_x_split = pinyin_x.split(" ")
     pinyin_y_split = pinyin_y.split(" ")
     pinyins = []
+    all_tongjiazi = re.findall(TONGJIAZI_PATTERN, explanation)
     for i, char in enumerate(word):
         if char == "一":
             pinyins.append("yī")
             continue
         p = pypinyin.pinyin(char, heteronym=True)[0]
-        if char in re.findall(TONGJIAZI_PATTERN, explanation):
+        if char in all_tongjiazi:
             pinyins.append(pinyin_x_split[i])
         elif len(p) == 1:
             pinyins.append(p[0])
