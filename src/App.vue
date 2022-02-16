@@ -197,7 +197,7 @@ onMounted(async() => {
       <EmptyIdiomDisplay
         v-for="i in guessStore.totalChances-guessStore.guesses.length"
         :key="i"
-        :class="guessStore.won ? ['children:border-red-50'] : []"
+        :class="guessStore.won ? ['!children:border-red-50'] : []"
         @click="idiomInput?.focus()"
       />
     </div>
