@@ -188,10 +188,16 @@ onMounted(async() => {
         :idiom="guess.idiom"
         :pinyin="guess.pinyin"
         :guess-results="guess.result"
+        :class="
+          guessStore.won && i === guessStore.guesses.length - 1
+            ? ['!children:border-green-400', '!children:border-double']
+            : []
+        "
       />
       <EmptyIdiomDisplay
         v-for="i in guessStore.totalChances-guessStore.guesses.length"
         :key="i"
+        :class="guessStore.won ? ['children:border-red-50'] : []"
         @click="idiomInput?.focus()"
       />
     </div>
