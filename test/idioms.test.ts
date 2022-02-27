@@ -32,4 +32,11 @@ describe('Idioms Store', () => {
     expect(idiom).toHaveLength(4)
     expect(idiom).not.toEqual(idioms.randomIdiom())
   })
+
+  test('all list includes freq list', () => {
+    const allIdioms = Object.keys(ALL_IDIOMS)
+    expect(new Set([...allIdioms, ...FREQ_IDIOMS])).toEqual(new Set(allIdioms))
+    expect(new Set(FREQ_IDIOMS)).toHaveLength(FREQ_IDIOMS.length)
+    expect(new Set(allIdioms)).toHaveLength(allIdioms.length)
+  })
 })

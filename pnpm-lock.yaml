@@ -3,10 +3,12 @@ lockfileVersion: 5.3
 specifiers:
   '@antfu/eslint-config': ^0.16.0
   '@iconify/vue': ^3.1.2
+  '@types/lodash.samplesize': ^4.2.6
   '@types/node': ^17.0.9
   '@vitejs/plugin-vue': ^2.0.0
   c8: ^7.11.0
   eslint: ^8.7.0
+  lodash.samplesize: ^4.2.0
   pinia: ^2.0.9
   typescript: ^4.4.4
   vite: ^2.7.2
@@ -23,10 +25,12 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': 0.16.0_eslint@8.7.0+typescript@4.5.4
   '@iconify/vue': 3.1.2_vue@3.2.27
+  '@types/lodash.samplesize': 4.2.6
   '@types/node': 17.0.9
   '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.27
   c8: 7.11.0
   eslint: 8.7.0
+  lodash.samplesize: 4.2.0
   typescript: 4.5.4
   vite: 2.7.12
   vite-plugin-windicss: 1.6.3_vite@2.7.12
@@ -274,6 +278,16 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+    dev: true
+
+  /@types/lodash.samplesize/4.2.6:
+    resolution: {integrity: sha512-yBgEuIxVIM+corHdvB+NHgzni1Oc0aEd7acuO/jET0vO2Y2f6sl7vfQlaZKgzcN+ZqWLB6B2VQTKc1T5zQra+Q==}
+    dependencies:
+      '@types/lodash': 4.14.179
+    dev: true
+
+  /@types/lodash/4.14.179:
+    resolution: {integrity: sha512-uwc1x90yCKqGcIOAT6DwOSuxnrAbpkdPsUOZtwrXb4D/6wZs+6qG7QnIawDuZWg0sWpxl+ltIKCaLoMlna678w==}
     dev: true
 
   /@types/node/17.0.9:
@@ -2067,6 +2081,10 @@ packages:
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+    dev: true
+
+  /lodash.samplesize/4.2.0:
+    resolution: {integrity: sha1-Rgdi+7KzQikFF0mekNUVhttGX/k=}
     dev: true
 
   /lodash/4.17.21:

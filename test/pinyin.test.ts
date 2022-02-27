@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest'
+import sampleSize from 'lodash.samplesize'
 import { finals, splitCharPinyin, splitIdiomPinyin, splitTone } from '../src/pinyin'
+import ALL_IDIOMS from '../src/assets/all-idioms.json'
 import syllables from './syllables.json'
 
 describe('Pinyin Processing', () => {
@@ -23,6 +25,13 @@ describe('Pinyin Processing', () => {
       .toEqual([['z', 'uo', 4], ['', 'u', 2], ['x', 'ü', 1], ['x', 'i', 2]])
     expect(splitIdiomPinyin('ē yú fèng chéng'))
       .toEqual([['', 'e', 1], ['', 'ü', 2], ['f', 'eng', 4], ['ch', 'eng', 2]])
+    sampleSize(Object.values(ALL_IDIOMS), 1000).forEach((pinyin) => {
+      const splitedPinyin = splitIdiomPinyin(pinyin)
+      expect(splitedPinyin).toHaveLength(4)
+      splitedPinyin.forEach((split) => {
+        expect(split).toHaveLength(3)
+      })
+    })
   })
 
   test('finals list', () => {
