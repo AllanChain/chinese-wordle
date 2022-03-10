@@ -20,7 +20,7 @@ const chars = computed(() => {
 
 const shareLink = computed(() => {
   const url = new URL(location.href)
-  const b64String = Base64.encode(xorStrings('cnwordle', props.answer))
+  const b64String = Base64.encode(xorStrings('cnwordle', props.answer), true)
   url.searchParams.set('idiom', b64String)
   return url.href
 })
