@@ -14,7 +14,7 @@ watch(
       localStorage.setItem('wordle-difficulty', selectedDifficulty.value)
     }
   },
-  { immediate:true },
+  { immediate: true },
 )
 </script>
 
