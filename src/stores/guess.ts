@@ -5,9 +5,9 @@ import type { IdiomPinyin } from '@/pinyin'
 import { charEqual, splitIdiomPinyin, splitTone } from '@/pinyin'
 
 export enum GuessResult {
-  NotExists,
-  Exists,
-  CorrectPosition,
+  NotExists = 0,
+  Exists = 1,
+  CorrectPosition = 2,
 }
 export type CombinationResult = boolean
 export type CharGuessResult = [GuessResult, GuessResult, CombinationResult]

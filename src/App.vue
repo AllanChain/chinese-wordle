@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import { Base64 } from 'js-base64'
 import { useIdiomsStore } from './stores/idioms'
 import { useGuessStore } from './stores/guess'
 import IdiomDispaly from './components/IdiomDispaly.vue'
@@ -101,7 +102,11 @@ onMounted(async() => {
     const idiom = new URL(location.href).searchParams.get('idiom')
 
     if (idiom) {
-      const decodedIdiom = xorStrings('cnwordle', idiom)
+      let decodedIdiom: string
+      if (idiom.length === 4) // old version
+        decodedIdiom = xorStrings('cnwordle', idiom)
+      else // new version
+        decodedIdiom = xorStrings('cnwordle', Base64.decode(idiom))
       if (freqIdioms.includes(decodedIdiom)) {
         guessStore.initAnswerIdiom(decodedIdiom)
       }

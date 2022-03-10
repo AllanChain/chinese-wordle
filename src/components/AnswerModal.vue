@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { Base64 } from 'js-base64'
 import AbsoluteModal from './AbsoluteModal.vue'
 import CharDisplay from './CharDisplay.vue'
 import { xorStrings } from '@/xor-crypt'
+import { useGuessStore } from '@/stores/guess'
 
 const props = defineProps<{ answer: string; answerPinyin: string; won: boolean }>()
 const show = ref(true)
+const guessStore = useGuessStore()
 
 const chars = computed(() => {
   return props.answerPinyin.split(' ').map((pinyin, i) => ({
@@ -17,17 +20,39 @@ const chars = computed(() => {
 
 const shareLink = computed(() => {
   const url = new URL(location.href)
-  url.searchParams.set('idiom', xorStrings('cnwordle', props.answer))
+  const b64String = Base64.encode(xorStrings('cnwordle', props.answer))
+  url.searchParams.set('idiom', b64String)
   return url.href
 })
 
-const isWechat = navigator.userAgent.includes('MicroMessenger')
+const clipboardAvailable = !!navigator.clipboard
+
+const emojiMapping = ['🌑', '🌒', '🌓', '🌘', '🌙', '🌔', '🌗', '🌖', '🌕']
+
+const shareText = computed(() => {
+  let text = `拼成语 - 本次为${guessStore.difficultyName}难度 - ${
+    guessStore.won ? `${guessStore.guesses.length} 次猜中` : '失败'
+  }\n${shareLink.value}`
+  for (const [i, guess] of guessStore.guesses.entries()) {
+    text += i % 2 === 0 ? '\n' : '   |   '
+    for (const charResult of guess.result) {
+      const encodeNumber = charResult[0] * 3 + charResult[1]
+      text += emojiMapping[encodeNumber]
+    }
+  }
+  return text
+})
+
+const handleTextClick = (event: MouseEvent) => {
+  const target = event.target as HTMLTextAreaElement
+  if (target.selectionStart !== target.selectionEnd)
+    return
+  target.focus()
+  target.select()
+}
 
 const share = () => {
-  if (!isWechat)
-    navigator.clipboard.writeText(shareLink.value)
-  else
-    history.pushState(null, '', shareLink.value)
+  navigator.clipboard.writeText(shareText.value)
 }
 </script>
 
@@ -47,17 +72,38 @@ const share = () => {
         :pinyin="char.pinyin"
       />
     </div>
+    <textarea
+      :value="shareText"
+      readonly
+      class="block w-64 h-42 p-2"
+      w:m="y-2 x-auto"
+      w:bg="teal-50"
+      w:border="rounded-lg"
+      w:resize="none"
+      w:outline="none"
+      w:text="sm"
+      w:break="all"
+      @click="handleTextClick"
+    />
     <button
+      v-if="clipboardAvailable"
+      class="block"
       w:text="red-700"
-      w:m="t-2"
+      w:m="t-2 x-auto"
       w:p="x-4 y-2"
       w:shadow="lg"
       w:border="2 red-200 rounded-lg"
       w:bg="hover:red-100 active:red-200"
       @click="share"
     >
-      <Icon v-if="!isWechat" icon="mdi:link-variant" />
-      {{ isWechat ? '点击后复制网址向他人发起挑战' : '复制成语链接向他人发起挑战' }}
+      <Icon icon="mdi:link-variant" />
+      复制以分享成绩
     </button>
+    <div
+      v-else class="block mx-auto"
+      w:text="gray-600 sm center"
+    >
+      复制上方文本以分享成绩
+    </div>
   </AbsoluteModal>
 </template>
