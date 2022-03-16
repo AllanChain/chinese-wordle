@@ -21,6 +21,7 @@ const idiomsStore = useIdiomsStore()
 const guessStore = useGuessStore()
 
 const idiomInput = ref<HTMLInputElement | null>(null)
+const idiomDisplayContainer = ref<HTMLDivElement | null>(null)
 
 const guessIdiom = ref('')
 const guessError = ref('')
@@ -88,6 +89,14 @@ const doGuess = () => {
     showError('它不在我们的词库里...')
 
   guessIdiom.value = ''
+  if (idiomDisplayContainer.value) {
+    idiomDisplayContainer.value
+      .children[guessStore.guesses.length - 1]
+      .scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+  }
 }
 
 onMounted(async() => {
@@ -174,7 +183,7 @@ onMounted(async() => {
         </button>
       </div>
     </div>
-    <div class="flex my-2">
+    <div class="flex sticky top-0 my-1 py-1 bg-white">
       <DifficultyManager
         :disabled="guessStore.guessedIdioms.length > 0 && !gameEnded"
       />
@@ -186,7 +195,7 @@ onMounted(async() => {
         查看排除
       </button>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2">
+    <div ref="idiomDisplayContainer" class="grid grid-cols-1 sm:grid-cols-2">
       <IdiomDispaly
         v-for="(guess, i) in guessStore.guesses"
         :key="i"
