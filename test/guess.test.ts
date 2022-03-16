@@ -66,13 +66,14 @@ describe('Real Test', () => {
       }],
     }
     guessStore.guessIdiom('沉鱼落雁')
-    expect(guessStore.hints).toHaveLength(0)
+    expect(guessStore.hints).toEqual({})
     guessStore.guessIdiom('张灯结彩')
-    expect(guessStore.hints).toEqual([{
-      charIndex: 3,
-      content: 'chang',
-      level: HintTarget.Combination,
-    }])
+    expect(guessStore.hints).toEqual({
+      3: {
+        content: 'chang',
+        level: HintTarget.Combination,
+      },
+    })
   })
   test('hint give combination if both exists in one guess', () => {
     const guessStore = useGuessStore()
@@ -85,13 +86,14 @@ describe('Real Test', () => {
     }
     guessStore.guessIdiom('沉鱼落雁')
     guessStore.guessIdiom('张灯结彩')
-    expect(guessStore.hints).toHaveLength(0)
+    expect(guessStore.hints).toEqual({})
     guessStore.guessIdiom('如鱼得水')
-    expect(guessStore.hints).toEqual([{
-      charIndex: 0,
-      content: 'wei',
-      level: HintTarget.Combination,
-    }])
+    expect(guessStore.hints).toEqual({
+      0: {
+        content: 'wei',
+        level: HintTarget.Combination,
+      },
+    })
   })
   test('hint give tone if combination correct', () => {
     const guessStore = useGuessStore()
@@ -103,11 +105,12 @@ describe('Real Test', () => {
       }],
     }
     guessStore.guessIdiom('怅然若失')
-    expect(guessStore.hints).toEqual([{
-      charIndex: 3,
-      content: 'chāng',
-      level: HintTarget.CombinationAndTone,
-    }])
+    expect(guessStore.hints).toEqual({
+      3: {
+        content: 'chāng',
+        level: HintTarget.CombinationAndTone,
+      },
+    })
   })
   test('hint give character if both position and tone correct', () => {
     const guessStore = useGuessStore()
@@ -119,18 +122,20 @@ describe('Real Test', () => {
       }],
     }
     guessStore.guessIdiom('怅然若失')
-    expect(guessStore.hints).toHaveLength(0)
+    expect(guessStore.hints).toEqual({})
     guessStore.guessIdiom('五湖四海')
-    expect(guessStore.hints).toHaveLength(0)
+    expect(guessStore.hints).toEqual({})
     guessStore.guessIdiom('调虎离山')
-    expect(guessStore.hints).toEqual([{
-      charIndex: 1,
-      content: '虎',
-      level: HintTarget.Char,
-    }])
+    expect(guessStore.hints).toEqual({
+      1: {
+        content: '虎',
+        level: HintTarget.Char,
+      },
+    })
     guessStore.guessIdiom('为虎作伥')
     expect(guessStore.won).toBe(true)
-    expect(guessStore.hints).toHaveLength(1)
+    expect(guessStore.hints).to.have.all.keys(1)
+    expect(guessStore.hints).not.to.have.any.keys(0, 2, 3)
   })
   test('hint race', () => {
     const guessStore = useGuessStore()
@@ -142,13 +147,14 @@ describe('Real Test', () => {
       ],
     }
     guessStore.guessIdiom('调虎离山')
-    expect(guessStore.hints).toEqual([{
-      charIndex: 1,
-      content: '虎',
-      level: HintTarget.Char,
-    }])
+    expect(guessStore.hints).toEqual({
+      1: {
+        content: '虎',
+        level: HintTarget.Char,
+      },
+    })
     guessStore.guessIdiom('风花雪月')
-    expect(guessStore.hints).toHaveLength(1)
+    expect(guessStore.hints).to.have.all.keys(1)
   })
 })
 
@@ -172,7 +178,7 @@ describe('Special cases', () => {
     }
     guessStore.initAnswerIdiom('蛛丝马迹')
     guessStore.guessIdiom('视死如归')
-    expect(guessStore.hints).toHaveLength(1)
-    expect(guessStore.hints[0].content).toBe('sī')
+    expect(guessStore.hints).to.have.all.keys(1)
+    expect(guessStore.hints[1].content).toBe('sī')
   })
 })

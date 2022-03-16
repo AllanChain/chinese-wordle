@@ -34,7 +34,6 @@ export interface HintType {
   give: HintTarget
 }
 export interface Hint {
-  charIndex: number
   content: string
   level: HintTarget
 }
@@ -82,7 +81,7 @@ export const useGuessStore = defineStore('guess', {
   state: () => ({
     answerIdiom: null as Idiom | null,
     guessedIdioms: [] as Idiom[],
-    hints: [] as Hint[],
+    hints: {} as Record<number, Hint>,
     totalChances: 8,
     difficulty: difficulties.easy,
   }),
@@ -218,16 +217,13 @@ export const useGuessStore = defineStore('guess', {
       const lastGuess = this.guesses[this.guesses.length - 1]
       const lastGuessSyllables = lastGuess.pinyin.map(([initial, final]) => initial + final)
       const lastGuessPinyinFlatten = lastGuess.pinyin.flatMap(([initial, final]) => [initial, final])
-      const hints: Hint[] = []
       for (const [index, pinyin] of this.answerPinyin!.entries()) {
         const [initial, final] = pinyin
         const syllable = initial + final
         const origPinyin = this.answerOrigPinyin.split(' ')[index]
-        const highestLevelThisChar = Math.max(
-          ...this.hints.filter(hint => hint.charIndex === index).map(hint => hint.level),
-        )
+        const previousLevelThisChar = this.hints[index]?.level || -Infinity
         const hintTypes = this.difficulty.enabledHints.filter(
-          hint => hint.give > highestLevelThisChar,
+          hint => hint.give > previousLevelThisChar,
         )
         let give: HintTarget | -1 = -1
         for (const hintType of hintTypes) {
@@ -273,13 +269,11 @@ export const useGuessStore = defineStore('guess', {
             hintContent = origPinyin
             break
         }
-        hints.push({
-          charIndex: index,
+        this.hints[index] = {
           content: hintContent,
           level: give,
-        })
+        }
       }
-      this.hints.push(...hints)
     },
   },
 })
