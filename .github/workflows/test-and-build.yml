@@ -25,7 +25,7 @@ jobs:
           version: latest
           run_install: true
       - run: pnpm test
-      - run: pnpm build -- --base=/chinese-wordle/
+      - run: pnpm build --base=/chinese-wordle/
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
