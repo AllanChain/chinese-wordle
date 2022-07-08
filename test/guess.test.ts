@@ -4,22 +4,24 @@ import { HintCondition, HintTarget, useGuessStore } from '../src/stores/guess'
 import { useIdiomsStore } from '../src/stores/idioms'
 import ALL_IDIOMS from '../src/assets/all-idioms.json'
 import FREQ_IDIOMS from '../src/assets/freq-idioms.json'
+import { splitIdiomPinyin } from '../src/pinyin'
 
 describe('Guess Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    const guessStore = useGuessStore()
+    const idioms = useIdiomsStore()
+    idioms.setAllIdioms({ 和衷共济: 'hé zhōng gòng jì' })
+    idioms.setFreqIdioms(['和衷共济'])
+    guessStore.initAnswerIdiom('和衷共济')
   })
 
   test('answer pinyin', () => {
     const guessStore = useGuessStore()
-    const idioms = useIdiomsStore()
-    idioms.setAllIdioms({ 为虎作伥: 'wèi hǔ zuò chāng' })
-    idioms.setFreqIdioms(['为虎作伥'])
-    guessStore.initAnswerIdiom('为虎作伥')
-    expect(guessStore.answerIdiom).toBe('为虎作伥')
-    expect(guessStore.answerOrigPinyin).toBe('wèi hǔ zuò chāng')
+    expect(guessStore.answerIdiom).toBe('和衷共济')
+    expect(guessStore.answerOrigPinyin).toBe('hé zhōng gòng jì')
     expect(guessStore.answerPinyin)
-      .toEqual([['', 'uei', 4], ['h', 'u', 3], ['z', 'uo', 4], ['ch', 'ang', 1]])
+      .toEqual([['h', 'e', 2], ['zh', 'ong', 1], ['g', 'ong', 4], ['j', 'i', 4]])
   })
 })
 
@@ -33,6 +35,24 @@ describe('Real Test', () => {
     guessStore.initAnswerIdiom('为虎作伥')
   })
 
+  test('compare pinyin', () => {
+    const guessStore = useGuessStore()
+    const idioms = useIdiomsStore()
+    guessStore.initAnswerIdiom('无缘无故')
+    const compare = (idiom: string) => guessStore.compareIdiomPinyin(
+      splitIdiomPinyin(idioms.allIdioms[idiom]),
+    )
+    expect(compare('欢欣鼓舞')).toEqual(
+      [[0, 0, false], [0, 0, false], [1, 2, true], [1, 2, true]],
+    )
+    expect(compare('故步自封')).toEqual(
+      [[1, 2, true], [0, 1, false], [0, 0, false], [0, 0, false]],
+    )
+    expect(compare('五光十色')).toEqual(
+      [[2, 2, true], [1, 0, false], [0, 0, false], [0, 0, false]],
+    )
+  })
+
   test('add guess', () => {
     const guessStore = useGuessStore()
     guessStore.guessIdiom('东施效颦')
@@ -44,10 +64,10 @@ describe('Real Test', () => {
     })
     guessStore.guessIdiom('沉鱼落雁')
     expect(guessStore.guesses[1].result)
-      .toEqual([[1, 0, false], [1, 0, false], [0, 2, false], [1, 0, false]])
+      .toEqual([[1, 0, false], [1, 0, false], [0, 2, false], [0, 0, false]])
     guessStore.guessIdiom('左右逢源')
     expect(guessStore.guesses[2].result)
-      .toEqual([[1, 1, true], [1, 0, false], [0, 0, false], [1, 0, false]])
+      .toEqual([[1, 1, true], [1, 0, false], [0, 0, false], [0, 0, false]])
   })
 
   test('invalid guess', () => {
@@ -158,7 +178,7 @@ describe('Real Test', () => {
   })
 })
 
-describe('Special cases', () => {
+describe('Special hint cases', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     const idioms = useIdiomsStore()

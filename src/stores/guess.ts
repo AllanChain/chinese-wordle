@@ -109,18 +109,42 @@ export const useGuessStore = defineStore('guess', {
       return (guess: IdiomPinyin): IdiomGuessResult => {
         if (this.answerPinyinFlatten === null || this.answerSyllables === null)
           throw new Error('answer is not set')
-        return guess.map(([initial, final], charIndex) => {
-          const [initialResult, finalResult] = [initial, final].map(
-            (part, partIndex) => {
-              if (this.answerPinyin![charIndex][partIndex] === part)
-                return GuessResult.CorrectPosition
-              if (this.answerPinyinFlatten!.includes(part))
-                return GuessResult.Exists
-              return GuessResult.NotExists
-            })
-          const combinationResult = this.answerSyllables!.includes(initial + final)
-          return [initialResult, finalResult, combinationResult]
+
+        // Matched parts will be marked as null
+        const pinyinFlatten: (string|null)[] = [...this.answerPinyinFlatten]
+        const syllables: (string|null)[] = [...this.answerSyllables]
+        const result: IdiomGuessResult = []
+        for (let i = 0; i < 4; i++) result.push([0, 0, false])
+
+        guess.forEach(([initial, final], charIndex) => {
+          [initial, final].forEach((part, partIndex) => {
+            if (this.answerPinyin![charIndex][partIndex] === part) {
+              pinyinFlatten[charIndex * 2 + partIndex] = null
+              result[charIndex][partIndex] = GuessResult.CorrectPosition
+            }
+          })
+          if (syllables[charIndex] === initial + final) {
+            syllables[charIndex] = null
+            result[charIndex][2] = true
+          }
         })
+
+        guess.forEach(([initial, final], charIndex) => {
+          [initial, final].forEach((part, partIndex) => {
+            if (result[charIndex][partIndex] !== GuessResult.NotExists) return
+            if (pinyinFlatten.includes(part)) {
+              pinyinFlatten[pinyinFlatten.indexOf(part)] = null
+              result[charIndex][partIndex] = GuessResult.Exists
+            }
+          })
+          const syllable = initial + final
+          if (syllables.includes(syllable)) {
+            syllables[syllables.indexOf(syllable)] = null
+            result[charIndex][2] = true
+          }
+        })
+
+        return result
       }
     },
     guesses(): Guess[] {
