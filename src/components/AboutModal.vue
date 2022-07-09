@@ -6,6 +6,7 @@ const show = ref(true)
 </script>
 
 <template>
+  <!-- eslint-disable vue/multiline-html-element-content-newline -->
   <AbsoluteModal v-model="show">
     <div class="px-4 max-h-md overflow-x-auto">
       <h1 class="text-xl font-bold text-center mb-2">
@@ -21,6 +22,9 @@ const show = ref(true)
         颜色提示
       </h2>
       <img src="/color-explain.jpg" width="300" class="mx-auto">
+      <p class="text-xs mb-2">
+        上图谜底是“喜出望外”
+      </p>
       <p class="mb-2">
         如果你猜的成语中某一个声母或韵母：
         <ul class="list-circle list-inside my-1">
@@ -28,6 +32,8 @@ const show = ref(true)
           <li>出现在待猜成语中但位置错误，就是<span class="text-yellow-500">黄色</span></li>
           <li>韵母组合正确，会加上<span class="underline-green-500 underline-double underline">绿色双下划线</span></li>
           <li>压根没出现在待猜成语中，就是<span class="text-gray-500">灰色</span></li>
+          <li>如果在你猜的成语中多次出现而在待猜成语中只出现一次，则不会重复<span class="text-yellow-500">着黄色</span>；
+            如果都是多次出现（在待猜成语中出现 n 次），至多<span class="text-yellow-500">着黄色</span> n 次</li>
         </ul>
       </p>
       <h2 class="font-bold text-center my-2 text-fuchsia-800">
