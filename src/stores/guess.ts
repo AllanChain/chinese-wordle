@@ -120,6 +120,7 @@ export const useGuessStore = defineStore('guess', {
         const result: IdiomGuessResult = []
         for (let i = 0; i < 4; i++) result.push([0, 0, false])
 
+        // Priority 1: correct position & combination with correct position
         guess.forEach(([initial, final], charIndex) => {
           [initial, final].forEach((part, partIndex) => {
             if (this.answerPinyin![charIndex][partIndex] === part) {
@@ -133,6 +134,24 @@ export const useGuessStore = defineStore('guess', {
           }
         })
 
+        // Priority 2: correct combination but incorrect position
+        guess.forEach(([initial, final], charIndex) => {
+          const syllable = initial + final
+          if (syllables.includes(syllable)) {
+            syllables[syllables.indexOf(syllable)] = null
+            result[charIndex][2] = true;
+            [initial, final].forEach((part, partIndex) => {
+              if (result[charIndex][partIndex] !== GuessResult.NotExists)
+                return
+              if (pinyinFlatten.includes(part)) {
+                pinyinFlatten[pinyinFlatten.indexOf(part)] = null
+                result[charIndex][partIndex] = GuessResult.Exists
+              }
+            })
+          }
+        })
+
+        // Priority 3: just incorrect position
         guess.forEach(([initial, final], charIndex) => {
           [initial, final].forEach((part, partIndex) => {
             if (result[charIndex][partIndex] !== GuessResult.NotExists)
@@ -142,11 +161,6 @@ export const useGuessStore = defineStore('guess', {
               result[charIndex][partIndex] = GuessResult.Exists
             }
           })
-          const syllable = initial + final
-          if (syllables.includes(syllable)) {
-            syllables[syllables.indexOf(syllable)] = null
-            result[charIndex][2] = true
-          }
         })
 
         return result

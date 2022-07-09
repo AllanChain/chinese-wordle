@@ -35,7 +35,7 @@ describe('Real Test', () => {
     guessStore.initAnswerIdiom('为虎作伥')
   })
 
-  test('compare pinyin', () => {
+  test('compare pinyin with 无缘无故', () => {
     const guessStore = useGuessStore()
     const idioms = useIdiomsStore()
     guessStore.initAnswerIdiom('无缘无故')
@@ -50,6 +50,18 @@ describe('Real Test', () => {
     )
     expect(compare('五光十色')).toEqual(
       [[2, 2, true], [1, 0, false], [0, 0, false], [0, 0, false]],
+    )
+  })
+
+  test('compare pinyin with 喜出望外', () => {
+    const guessStore = useGuessStore()
+    const idioms = useIdiomsStore()
+    guessStore.initAnswerIdiom('喜出望外')
+    const compare = (idiom: string) => guessStore.compareIdiomPinyin(
+      splitIdiomPinyin(idioms.allIdioms[idiom]),
+    )
+    expect(compare('呼之欲出')).toEqual(
+      [[0, 0, false], [0, 1, false], [2, 0, false], [1, 1, true]],
     )
   })
 
