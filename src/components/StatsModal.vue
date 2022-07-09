@@ -14,7 +14,8 @@ const winRate = computed(() => {
 
 const countDistribution = computed(() => {
   const counts = props.guessRecord.reduce((acc, count) => {
-    if (count < 1) return acc
+    if (count < 1)
+      return acc
     acc[count] = (acc[count] ?? 0) + 1
     return acc
   }, {} as Record<number, number>)

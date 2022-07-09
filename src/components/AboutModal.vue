@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import AbsoluteModal from './AbsoluteModal.vue'
 
 const show = ref(true)
-
 </script>
 
 <template>

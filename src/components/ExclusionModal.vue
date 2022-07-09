@@ -16,7 +16,6 @@ const getColor = (p: string) => {
       ? 'bg-green-500'
       : 'bg-blue-400'
 }
-
 </script>
 
 <template>

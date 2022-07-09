@@ -87,20 +87,24 @@ export const useGuessStore = defineStore('guess', {
   }),
   getters: {
     answerOrigPinyin(state): string | null {
-      if (state.answerIdiom === null) return null
+      if (state.answerIdiom === null)
+        return null
       const idioms = useIdiomsStore()
       return idioms.allIdioms[state.answerIdiom]
     },
     answerPinyin(): IdiomPinyin | null {
-      if (this.answerOrigPinyin === null) return null
+      if (this.answerOrigPinyin === null)
+        return null
       return splitIdiomPinyin(this.answerOrigPinyin)
     },
     answerPinyinFlatten(): string[] | null {
-      if (this.answerPinyin === null) return null
+      if (this.answerPinyin === null)
+        return null
       return this.answerPinyin.flatMap(([initial, final]) => [initial, final])
     },
-    answerSyllables(): string[]|null {
-      if (this.answerPinyin === null) return null
+    answerSyllables(): string[] | null {
+      if (this.answerPinyin === null)
+        return null
       return this.answerPinyin.map(
         ([initial, final]) => initial + final,
       )
@@ -111,8 +115,8 @@ export const useGuessStore = defineStore('guess', {
           throw new Error('answer is not set')
 
         // Matched parts will be marked as null
-        const pinyinFlatten: (string|null)[] = [...this.answerPinyinFlatten]
-        const syllables: (string|null)[] = [...this.answerSyllables]
+        const pinyinFlatten: (string | null)[] = [...this.answerPinyinFlatten]
+        const syllables: (string | null)[] = [...this.answerSyllables]
         const result: IdiomGuessResult = []
         for (let i = 0; i < 4; i++) result.push([0, 0, false])
 
@@ -131,7 +135,8 @@ export const useGuessStore = defineStore('guess', {
 
         guess.forEach(([initial, final], charIndex) => {
           [initial, final].forEach((part, partIndex) => {
-            if (result[charIndex][partIndex] !== GuessResult.NotExists) return
+            if (result[charIndex][partIndex] !== GuessResult.NotExists)
+              return
             if (pinyinFlatten.includes(part)) {
               pinyinFlatten[pinyinFlatten.indexOf(part)] = null
               result[charIndex][partIndex] = GuessResult.Exists
@@ -191,11 +196,13 @@ export const useGuessStore = defineStore('guess', {
       return this.guessedIdioms.length >= this.totalChances && !this.won
     },
     includeList(): string[] {
-      if (this.answerPinyinFlatten === null) return []
+      if (this.answerPinyinFlatten === null)
+        return []
       return this.answerPinyinFlatten.filter(p => this.guessesPinyinFlatten.includes(p))
     },
     excludeList(): string[] {
-      if (this.answerPinyinFlatten === null) return []
+      if (this.answerPinyinFlatten === null)
+        return []
       return this.guessesPinyinFlatten.filter(p => !this.answerPinyinFlatten!.includes(p))
     },
     // enabledHints(): HintType[] {
@@ -231,13 +238,16 @@ export const useGuessStore = defineStore('guess', {
      */
     guessIdiom(guess: Idiom): boolean {
       const idioms = useIdiomsStore()
-      if (!idioms.isValidIdiom(guess)) return false
+      if (!idioms.isValidIdiom(guess))
+        return false
       this.guessedIdioms.push(guess)
-      if (!this.won) this.updateHints()
+      if (!this.won)
+        this.updateHints()
       return true
     },
     updateHints() {
-      if (!this.answerIdiom || !this.answerOrigPinyin) return []
+      if (!this.answerIdiom || !this.answerOrigPinyin)
+        return []
       const lastGuess = this.guesses[this.guesses.length - 1]
       const lastGuessSyllables = lastGuess.pinyin.map(([initial, final]) => initial + final)
       const lastGuessPinyinFlatten = lastGuess.pinyin.flatMap(([initial, final]) => [initial, final])
@@ -251,7 +261,8 @@ export const useGuessStore = defineStore('guess', {
         )
         let give: HintTarget | -1 = -1
         for (const hintType of hintTypes) {
-          if (hintType.give <= give) continue
+          if (hintType.give <= give)
+            continue
           if (
             hintType.on === HintCondition.BothEverGuessed
             && this.guessesPinyinFlatten.includes(initial)
@@ -280,7 +291,8 @@ export const useGuessStore = defineStore('guess', {
             give = hintType.give
         }
 
-        if (give === -1) continue
+        if (give === -1)
+          continue
         let hintContent: string
         switch (give) {
           case HintTarget.Char:

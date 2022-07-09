@@ -5,6 +5,7 @@ import FadeTransition from './FadeTransition.vue'
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits(['update:modelValue'])
 </script>
+
 <template>
   <FadeTransition>
     <div

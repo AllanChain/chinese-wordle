@@ -25,7 +25,7 @@ const idiomDisplayContainer = ref<HTMLDivElement | null>(null)
 
 const guessIdiom = ref('')
 const guessError = ref('')
-const hideGuessErrorHandle = ref<number|null>(null)
+const hideGuessErrorHandle = ref<number | null>(null)
 
 const loadingIdiom = ref(true)
 const loadingError = ref('')
@@ -99,7 +99,7 @@ const doGuess = () => {
   }
 }
 
-onMounted(async() => {
+onMounted(async () => {
   try {
     const allIdiomsRes = await fetch(allIdiomsURL)
     const allIdioms = await allIdiomsRes.json()
@@ -209,7 +209,7 @@ onMounted(async() => {
         "
       />
       <EmptyIdiomDisplay
-        v-for="i in guessStore.totalChances-guessStore.guesses.length"
+        v-for="i in guessStore.totalChances - guessStore.guesses.length"
         :key="i"
         :class="guessStore.won ? ['!children:border-red-50'] : []"
         @click="idiomInput?.focus()"

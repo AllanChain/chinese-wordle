@@ -14,7 +14,6 @@ const guessColors = {
   [GuessResult.Exists]: 'yellow-500',
   [GuessResult.CorrectPosition]: 'green-500',
 }
-
 </script>
 
 <template>
@@ -24,7 +23,7 @@ const guessColors = {
         v-if="Array.isArray(pinyin) && guessResults"
         class="flex justify-center items-baseline decoration-green-500"
         w:underline="offset-1 double"
-        :class="guessResults[2] ? [ 'underline' ] : []"
+        :class="guessResults[2] ? ['underline'] : []"
       >
         <div :class="`text-${guessColors[guessResults[0]]}`">
           {{ pinyin[0] || 'Ø' }}
