@@ -18,7 +18,7 @@ const show = ref(true)
         必须输入一个合法的成语。
         尽量在浏览器打开，而非微信。
       </p>
-      <h2 class="font-bold text-center my-2 text-green-800">
+      <h2 class="font-bold text-center my-2 text-green-800 dark:text-green-500">
         颜色提示
       </h2>
       <img src="/color-explain.jpg" width="300" class="mx-auto">
@@ -31,12 +31,12 @@ const show = ref(true)
           <li>位置与待猜成语相同，它就会被标成<span class="text-green-500">绿色</span></li>
           <li>出现在待猜成语中但位置错误，就是<span class="text-yellow-500">黄色</span></li>
           <li>韵母组合正确，会加上<span class="underline-green-500 underline-double underline">绿色双下划线</span></li>
-          <li>压根没出现在待猜成语中，就是<span class="text-gray-500">灰色</span></li>
+          <li>压根没出现在待猜成语中，就是<span class="text-gray-500 dark:text-gray-400">灰色</span></li>
           <li>如果在你猜的成语中多次出现而在待猜成语中只出现一次，则不会重复<span class="text-yellow-500">着黄色</span>；
             如果都是多次出现（在待猜成语中出现 n 次），至多<span class="text-yellow-500">着黄色</span> n 次</li>
         </ul>
       </p>
-      <h2 class="font-bold text-center my-2 text-fuchsia-800">
+      <h2 class="font-bold text-center my-2 text-fuchsia-800 dark:text-fuchsia-500">
         其他提示
       </h2>
       <p class="mb-2">
@@ -55,14 +55,14 @@ const show = ref(true)
       <p class="mb-2">
         不同难度选择的区别也就在于这部分提示的多少和获得提示的难度。
       </p>
-      <h2 class="font-bold text-center my-2 text-indigo-800">
+      <h2 class="font-bold text-center my-2 text-indigo-800 dark:text-indigo-500">
         拼音
       </h2>
       <p class="mb-2">
         游戏中的拼音声母韵母划分基本按照
         <a
           href="http://www.moe.gov.cn/jyb_sjzl/ziliao/A19/195802/t19580201_186000.html"
-          class="text-blue-700 hover:underline"
+          class="text-blue-700 dark:text-blue-400 hover:underline"
         >
           《汉语拼音方案》
         </a>
@@ -94,31 +94,31 @@ const show = ref(true)
         </a>
         对拼音算法的校对修正工作。
       </p>
-      <h2 class="font-bold text-center my-2 text-pink-800">
+      <h2 class="font-bold text-center my-2 text-pink-800 dark:text-pink-500">
         成语与参考资料
       </h2>
       <p class="mb-2">
         游戏中用作待猜成语的主要来自
         <a
           href="http://thuocl.thunlp.org/#chengyu"
-          class="text-purple-700 hover:underline"
+          class="text-purple-700 dark:text-purple-500 hover:underline"
         >
           THUOCL 的成语词频表</a>，
         并经过人工简单筛选，去掉了一部分不适合猜的成语。
         作为验证输入的成语比用作待猜成语的数量更多，其选取和注音主要来自<a
           href="https://www.zdic.net/cd/cybs/"
-          class="text-red-900 hover:underline"
+          class="text-red-900 dark:text-red-500 hover:underline"
         >汉典</a>，并利用
         <a
           href="https://github.com/mozillazg/python-pinyin"
-          class="text-sky-700 hover:underline"
+          class="text-sky-700 dark:text-sky-500 hover:underline"
         >
           pypinyin
         </a>
         库作了简单的自动校对。
         部分未能自动校对的一百来个成语被未被纳入列表。
       </p>
-      <h2 class="font-bold text-center my-2 text-violet-800">
+      <h2 class="font-bold text-center my-2 text-violet-800 dark:text-violet-500">
         分享
       </h2>
       <p class="mb-2">
@@ -127,13 +127,13 @@ const show = ref(true)
       <p class="mb-2">
         游戏结束后，点击复制链接按钮，邀请好友打开，即可让好友也来猜猜这个成语。
       </p>
-      <h2 class="font-bold text-center my-2 text-lime-800">
+      <h2 class="font-bold text-center my-2 text-lime-800 dark:text-lime-500">
         项目
       </h2>
       <p class="mb-2">
         本项目<a
           href="https://github.com/AllanChain/chinese-wordle"
-          class="text-blue-700 hover:underline"
+          class="text-blue-700 dark:text-blue-400 hover:underline"
         >在 GitHub 开源</a>，如有问题和建议欢迎提出。
       </p>
       <p class="mb-2">

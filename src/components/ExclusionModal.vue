@@ -11,10 +11,10 @@ const show = ref(false)
 
 const getColor = (p: string) => {
   return props.excluded.includes(p)
-    ? 'bg-gray-300'
+    ? 'bg-gray-300 dark:bg-gray-700'
     : props.included.includes(p)
-      ? 'bg-green-500'
-      : 'bg-blue-400'
+      ? 'bg-green-500 dark:bg-green-600'
+      : 'bg-blue-400 dark:bg-blue-600'
 }
 </script>
 
@@ -49,13 +49,13 @@ const getColor = (p: string) => {
     <div class="flex ml-4 mt-2">
       图例：
       <div class="flex text-white">
-        <div class="*badge bg-gray-300">
+        <div class="*badge bg-gray-300 dark:bg-gray-700">
           排除
         </div>
-        <div class="*badge bg-green-500">
+        <div class="*badge bg-green-500 dark:bg-green-600">
           包含
         </div>
-        <div class="*badge bg-blue-400">
+        <div class="*badge bg-blue-400 dark:bg-blue-600">
           可能
         </div>
       </div>

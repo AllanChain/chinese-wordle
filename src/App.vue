@@ -156,7 +156,7 @@ onMounted(async () => {
     <div class="flex" w:border="b-1 solid gray-300" w:p="b-2">
       <div class="flex justify-center w-18">
         <button
-          class="bg-red-400 text-white rounded-md px-2 py-1"
+          class="bg-red-400 dark:bg-red-500 text-white rounded-md px-2 py-1"
           @click="showAnswer = true; givenUp = true; addGuessRecord(-1)"
         >
           答案
@@ -164,32 +164,32 @@ onMounted(async () => {
       </div>
       <h1
         class="flex-1"
-        w:text="3xl center blue-900"
+        w:text="3xl center blue-900 dark:blue-400"
       >
         拼成语
       </h1>
       <div class="flex justify-center w-18">
         <button
-          class="text-emerald-700 text-xl mx-2"
+          class="text-emerald-700 dark:text-emerald-500 text-xl mx-2"
           @click="showStats = true"
         >
           <Icon icon="ion:ios-stats" />
         </button>
         <button
-          class="text-emerald-700 text-xl mx-2"
+          class="text-emerald-700 dark:text-emerald-500 text-xl mx-2"
           @click="showAbout = true"
         >
           <Icon icon="ph:info-bold" />
         </button>
       </div>
     </div>
-    <div class="flex sticky top-0 my-1 py-1 bg-white">
+    <div class="flex sticky top-0 my-1 py-1 bg-white dark:bg-gray-900">
       <DifficultyManager
         :disabled="guessStore.guessedIdioms.length > 0 && !gameEnded"
       />
       <Hints :hints="Object.values(guessStore.hints).map(hint => hint.content)" />
       <button
-        class="bg-teal-500 text-white rounded-md h-8 w-22"
+        class="bg-teal-500 dark:bg-teal-600 text-white rounded-md h-8 w-22"
         @click="showExclusion = true"
       >
         查看排除
@@ -211,7 +211,7 @@ onMounted(async () => {
       <EmptyIdiomDisplay
         v-for="i in guessStore.totalChances - guessStore.guesses.length"
         :key="i"
-        :class="guessStore.won ? ['!children:border-red-50'] : []"
+        :class="guessStore.won ? ['!children:border-red-50 !dark:children:border-stone-800'] : []"
         @click="idiomInput?.focus()"
       />
     </div>
@@ -238,15 +238,19 @@ onMounted(async () => {
             v-model="guessIdiom"
             maxlength="4"
             class="rounded-l px-2 w-32"
-            w:border="1 solid gray-300"
+            w:border="1 solid gray-300 dark:gray-600"
             w:focus="ring ring-blue-400 border-blue-400"
+            w:bg="white dark:gray-700 disabled:gray-100 dark:disabled:gray-600"
             w:disabled="bg-gray-100"
             @keyup.enter="doGuess"
           >
           <button
             class="rounded-r w-18"
             w:p="x-4 y-2"
-            w:bg="blue-500 hover:blue-600 active:blue-700 disabled:blue-gray-400"
+            w:bg="blue-500 dark:blue-600"
+            w:hover="bg-blue-600 dark:bg-blue:700"
+            w:active="bg-blue-700 dark:bg-blue-800"
+            w:disabled="bg-gray-400 dark:bg-gray-700"
             w:text="white"
             @click="doGuess"
           >
@@ -256,14 +260,16 @@ onMounted(async () => {
         <div v-else class="flex">
           <div
             class="flex px-2 w-28 rounded-l bg-gray-100 items-center justify-center"
-            :class="guessStore.won ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'"
+            :class="guessStore.won
+              ? 'bg-green-100 dark:bg-green-200 text-green-900'
+              : 'bg-red-100 dark:bg-red-200 text-red-900'"
           >
             <div>{{ guessStore.won ? '恭喜你' : '很遗憾' }}</div>
           </div>
           <button
             class="rounded-r w-18"
             w:p="x-4 y-2"
-            w:bg="indigo-500 hover:indigo-600 active:indigo-700"
+            w:bg="indigo-500 hover:indigo-600 dark:indigo-600 dark:hover:indigo-700"
             w:text="white"
             @click="reDo"
           >

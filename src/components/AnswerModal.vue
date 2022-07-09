@@ -60,7 +60,9 @@ const share = () => {
   <AbsoluteModal v-model="show">
     <h1
       class="text-lg font-bold text-center mb-2"
-      :class="won ? 'text-green-700' : 'text-yellow-700'"
+      :class="won
+        ? 'text-green-700 dark:text-green-600'
+        : 'text-yellow-700 dark:text-yellow-600'"
     >
       {{ won ? '你猜对了' : '待猜成语' }}
     </h1>
@@ -77,7 +79,7 @@ const share = () => {
       readonly
       class="block w-64 h-42 p-2"
       w:m="y-2 x-auto"
-      :w:bg="won ? 'teal-50' : 'red-50'"
+      :w:bg="won ? 'teal-50 dark:zinc-800' : 'red-50 dark:stone-800'"
       w:border="rounded-lg"
       w:resize="none"
       w:outline="none"
@@ -88,12 +90,12 @@ const share = () => {
     <button
       v-if="clipboardAvailable"
       class="block"
-      w:text="red-700"
+      w:text="teal-700 dark:teal-500"
       w:m="t-2 x-auto"
       w:p="x-4 y-2"
       w:shadow="lg"
-      w:border="2 red-200 rounded-lg"
-      w:bg="hover:red-100 active:red-200"
+      w:border="2 teal-200 dark:teal-900 rounded-lg"
+      w:bg="hover:teal-50 active:teal-100 dark:hover:gray-900"
       @click="share"
     >
       <Icon icon="mdi:link-variant" />
@@ -101,7 +103,7 @@ const share = () => {
     </button>
     <div
       v-else class="block mx-auto"
-      w:text="gray-600 sm center"
+      w:text="gray-600 dark:gray-500 sm center"
     >
       复制上方文本以分享成绩
     </div>

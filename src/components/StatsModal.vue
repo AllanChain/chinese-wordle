@@ -30,7 +30,7 @@ const countDistribution = computed(() => {
     <h1 class="text-lg text-center mb-2">
       统计
     </h1>
-    <div class="flex justify-center text-sky-900">
+    <div class="flex justify-center text-sky-900 dark:text-sky-100">
       <div class="flex items-center flex-col w-16">
         <div class="text-xl font-bold">
           {{ guessRecord.length }}
@@ -47,7 +47,7 @@ const countDistribution = computed(() => {
     <h2 class="text-center my-2">
       猜测次数统计
     </h2>
-    <div class="min-w-72 font-mono text-yellow-800">
+    <div class="min-w-72 font-mono text-yellow-800 dark:text-yellow-600">
       <div v-if="countDistribution.length === 0" class="text-center">
         暂无数据
       </div>

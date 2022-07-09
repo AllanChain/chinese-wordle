@@ -4,7 +4,7 @@ const props = defineProps<{ hints: string[] }>()
 
 <template>
   <div class="flex flex-1">
-    <div class="text-green-800 mt-1">
+    <div class="text-green-800 dark:text-green-400 mt-1">
       提示：
     </div>
     <div v-if="hints.length === 0" class="text-gray-400 mt-1">
@@ -14,7 +14,7 @@ const props = defineProps<{ hints: string[] }>()
       <div
         v-for="hint in hints"
         :key="hint"
-        class="*badge bg-green-500 text-gray-100"
+        class="*badge bg-green-500 dark:bg-green-600 text-gray-100"
       >
         {{ hint }}
       </div>

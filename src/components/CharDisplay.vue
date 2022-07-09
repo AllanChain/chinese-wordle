@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const guessColors = {
-  [GuessResult.NotExists]: 'gray-500',
+  [GuessResult.NotExists]: 'gray-500 dark:text-gray-400',
   [GuessResult.Exists]: 'yellow-500',
   [GuessResult.CorrectPosition]: 'green-500',
 }

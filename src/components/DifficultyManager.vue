@@ -23,8 +23,8 @@ watch(
     v-model="selectedDifficulty"
     class="rounded-lg px-1 mr-2 h-8"
     w:border="1 blue-400 disabled:gray-400"
-    w:bg="white disabled:gray-100"
-    w:text="blue-900 disabled:gray-500"
+    w:bg="white dark:gray-900 disabled:gray-100 dark:disabled:gray-700"
+    w:text="blue-900 dark:blue-400 disabled:gray-500 dark:disabled:gray-400"
     :disabled="disabled"
   >
     <option
