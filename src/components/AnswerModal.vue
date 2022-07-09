@@ -77,7 +77,7 @@ const share = () => {
       readonly
       class="block w-64 h-42 p-2"
       w:m="y-2 x-auto"
-      w:bg="teal-50"
+      :w:bg="won ? 'teal-50' : 'red-50'"
       w:border="rounded-lg"
       w:resize="none"
       w:outline="none"
