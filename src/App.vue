@@ -30,7 +30,7 @@ const hideGuessErrorHandle = ref<number | null>(null)
 const loadingIdiom = ref(true)
 const loadingError = ref('')
 
-const showAbout = ref(localStorage.getItem('played-wordle') !== 'true')
+const showAbout = ref(localStorage.getItem('played-wordle') !== 'rev-2')
 const showAnswer = ref(false)
 const showStats = ref(false)
 const showExclusion = ref(false)
@@ -66,7 +66,7 @@ watch(
   { immediate: false },
 )
 
-onMounted(() => localStorage.setItem('played-wordle', 'true'))
+onMounted(() => localStorage.setItem('played-wordle', 'rev-2'))
 
 const reDo = () => {
   guessStore.reset()
