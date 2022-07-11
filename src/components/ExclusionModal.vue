@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import sampleSize from 'lodash.samplesize'
 import AbsoluteModal from './AbsoluteModal.vue'
-import { finals, initials } from '@/pinyin'
+import { finals, initials, splitIdiomPinyin } from '@/pinyin'
+import { useIdiomsStore } from '@/stores/idioms'
 
 const props = defineProps<{
   excluded: string[]
   included: string[]
 }>()
 const show = ref(false)
+const idiomsStore = useIdiomsStore()
 
 const getColor = (p: string) => {
   return props.excluded.includes(p)
@@ -16,6 +19,28 @@ const getColor = (p: string) => {
       ? 'bg-green-500 dark:bg-green-600'
       : 'bg-blue-400 dark:bg-blue-600'
 }
+
+const suggestion = computed(() => {
+  let bestIdiom = null
+  let bestRecord = 0
+  const idiomsPool = [
+    ...sampleSize(idiomsStore.freqIdioms, 100),
+    ...sampleSize(Object.keys(idiomsStore.allIdioms), 500),
+  ]
+  for (const idiom of idiomsPool) {
+    const pinyinFlatten = splitIdiomPinyin(idiomsStore.allIdioms[idiom]).flatMap(
+      ([i, f]) => [i, f],
+    )
+    const possibleParts = Array.from(new Set(pinyinFlatten)).filter(
+      part => !props.included.includes(part) && !props.excluded.includes(part),
+    )
+    if (possibleParts.length > bestRecord) {
+      bestRecord = possibleParts.length
+      bestIdiom = idiom
+    }
+  }
+  return bestIdiom
+})
 </script>
 
 <template>
@@ -60,8 +85,11 @@ const getColor = (p: string) => {
         </div>
       </div>
     </div>
-    <div class="text-sm ml-4 text-gray-800">
-      注：韵母表中未包含个别过于少见的韵母
+    <div class="text-sm ml-4 text-gray-800 dark:text-gray-300">
+      <p> 注：韵母表中未包含个别过于少见的韵母</p>
+      <p v-if="suggestion">
+        想要排除更多？试试 {{ suggestion }} 吧！
+      </p>
     </div>
   </AbsoluteModal>
 </template>

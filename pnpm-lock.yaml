@@ -25,6 +25,7 @@ specifiers:
 
 dependencies:
   js-base64: 3.7.2
+  lodash.samplesize: 4.2.0
   pinia: 2.0.14_j6bzmzd4ujpabbp5objtwxyjp4
   vue: 3.2.37
 
@@ -36,7 +37,6 @@ devDependencies:
   '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.37
   c8: 7.11.3
   eslint: 8.19.0
-  lodash.samplesize: 4.2.0
   typescript: 4.7.4
   vite: 2.9.14
   vite-plugin-pwa: 0.12.2_vite@2.9.14
@@ -3635,7 +3635,7 @@ packages:
 
   /lodash.samplesize/4.2.0:
     resolution: {integrity: sha512-1ZhKV7/nuISuaQdxfCqrs4HHxXIYN+0Z4f7NMQn2PHkxFZJGavJQ1j/paxyJnLJmN2ZamNN6SMepneV+dCgQTA==}
-    dev: true
+    dev: false
 
   /lodash.sortby/4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
