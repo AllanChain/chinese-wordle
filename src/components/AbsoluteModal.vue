@@ -12,7 +12,7 @@ const emit = defineEmits(['update:modelValue'])
       v-if="modelValue"
       class="fixed w-full h-full flex justify-center items-center z-10"
       w:bg="opacity-25 black"
-      @click.self="emit('update:modelValue', !modelValue)"
+      @click.self="emit('update:modelValue', false)"
     >
       <div
         class="relative bg-white dark:bg-gray-800 rounded-lg mx-3 max-w-md p-2"
@@ -23,7 +23,7 @@ const emit = defineEmits(['update:modelValue'])
           <Icon
             class="text-xl text-red-900 dark:text-red-500"
             icon="mdi:close-circle-outline"
-            @click="emit('update:modelValue', !modelValue)"
+            @click="emit('update:modelValue', false)"
           />
         </div>
         <slot />
