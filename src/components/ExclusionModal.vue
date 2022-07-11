@@ -4,6 +4,7 @@ import sampleSize from 'lodash.samplesize'
 import AbsoluteModal from './AbsoluteModal.vue'
 import { finals, initials, splitIdiomPinyin } from '@/pinyin'
 import { useIdiomsStore } from '@/stores/idioms'
+import { useGuessStore } from '@/stores/guess'
 
 const props = defineProps<{
   excluded: string[]
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>()
 const show = ref(false)
 const idiomsStore = useIdiomsStore()
+const guessStore = useGuessStore()
 
 const getColor = (p: string) => {
   return props.excluded.includes(p)
@@ -87,7 +89,7 @@ const suggestion = computed(() => {
     </div>
     <div class="text-sm ml-4 text-gray-800 dark:text-gray-300">
       <p> 注：韵母表中未包含个别过于少见的韵母</p>
-      <p v-if="suggestion">
+      <p v-if="suggestion && !guessStore.won && !guessStore.lost">
         想要排除更多？试试 {{ suggestion }} 吧！
       </p>
     </div>
