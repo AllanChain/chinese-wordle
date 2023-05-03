@@ -22,7 +22,7 @@ jobs:
             ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: latest
+          version: 7
           run_install: true
       - run: pnpm test
       - run: pnpm build --base=/chinese-wordle/
